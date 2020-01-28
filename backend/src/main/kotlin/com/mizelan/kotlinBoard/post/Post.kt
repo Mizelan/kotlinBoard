@@ -1,14 +1,11 @@
 package com.mizelan.kotlinBoard.post
 
-import java.time.LocalDateTime
 import java.util.*
 import javax.persistence.*
 
 @Entity
 @Table(name = "`post`")
 class Post {
-
-
     constructor(title: String, content: String?, createdAt: Date = Date(), updatedAt: Date = Date())  {
         this.title = title
         this.content = content
