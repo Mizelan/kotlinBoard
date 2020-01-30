@@ -1,5 +1,6 @@
 package com.mizelan.kotlinBoard.post
 
+import javassist.NotFoundException
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -13,16 +14,23 @@ class PostService (val postRepository: PostRepository) {
 
     fun getPost(id: Long) = postRepository.findByIdOrNull(id)
 
-    fun createPost(request: CreatePostRequest) = postRepository.save(Post(request.title, request.content))
+    fun createPost(request: CreatePostRequest) = postRepository.save(Post(title = request.title, content = request.content))
 
     fun deletePost(id: Long) = postRepository.deleteById(id)
 
-    fun updatePost(id: Long,  request: UpdatePostRequest) =
+    fun updatePost(id: Long, request: UpdatePostRequest): Post {
+        var entity =
+            postRepository.findById(id).orElse(null) ?:
+                throw NotFoundException("post `$id` not found.")
+
         postRepository.save(
-                postRepository.findById(id).get().apply {
-                    title = request.title
-                    content = request.content
-                    updatedAt = Date()
-                })
+                entity.copy(
+                        title = request.title,
+                        content = request.content,
+                        updatedAt = Date()
+                ))
+
+        return entity
+    }
 }
 
