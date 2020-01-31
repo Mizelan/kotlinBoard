@@ -26,9 +26,9 @@ class PostController(val postRepository: PostRepository, val postService: PostSe
     }
 
     @PutMapping(path = ["/{id}"])
-    fun updateTodo(@RequestBody request: UpdatePostRequest, @PathVariable("id") id: Long): ResponseEntity<Unit> {
-        postService.updatePost(id, request)
-        return ResponseEntity(HttpStatus.OK)
+    fun updateTodo(@RequestBody request: UpdatePostRequest, @PathVariable("id") id: Long): ResponseEntity<Post> {
+        val result = postService.updatePost(id, request)
+        return ResponseEntity(result, HttpStatus.OK)
     }
 
     @DeleteMapping(path = ["/{id}"])
