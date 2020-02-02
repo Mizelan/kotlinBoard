@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import EditPost from '../views/EditPost.vue'
+import ViewPost from '../views/ViewPost.vue'
 
 Vue.use(VueRouter)
 
@@ -21,7 +22,13 @@ const routes = [
     path: '/edit/:postId',
     name: 'edit',
     component: EditPost,
-    props: (route) => ({mode: 'modify', postId: route.params.postId })
+    props: (route) => ({ mode: 'modify', postId: route.params.postId })
+  },
+  {
+    path: '/:postId',
+    name: 'view',
+    component: ViewPost,
+    props: (route) => ({ postId: route.params.postId })
   },
   {
     path: '/about',

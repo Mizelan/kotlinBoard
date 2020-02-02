@@ -46,7 +46,7 @@
       this.$store.dispatch('READ_POST', {postId})
       .then(result => {
         this.title = result.title;
-        this.simpleMde.value(result.content)
+        this.simpleMde.value(result.content);
       })
       .catch(({message}) => {
         this.$log.error("err : ", message);
