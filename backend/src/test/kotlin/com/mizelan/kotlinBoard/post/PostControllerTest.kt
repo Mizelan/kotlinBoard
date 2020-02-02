@@ -77,7 +77,7 @@ class PostControllerTest {
     }
 
     @Test
-    fun updateTodo() {
+    fun update() {
         val request = UpdatePostRequest("title", "content")
         given(postService.updatePost(123, request))
                 .willReturn(Post(123, request.title, request.content));

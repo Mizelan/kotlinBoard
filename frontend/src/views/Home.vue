@@ -5,7 +5,7 @@
         <h4>
           게시판
           <span class="float-right">
-            <router-link to="/bbs/write" class="btn btn-info btn-sm ml-2">
+            <router-link to="/create" class="btn btn-info btn-sm ml-2">
               글쓰기
             </router-link>
           </span>
@@ -60,14 +60,14 @@ export default {
     },
     formatDate: function(value) {
       if (value)
-        return moment(String(value)).local().format("YYYY/MM/DD hh:mm:ss")
+        return moment(String(value)).local().format("YYYY/M/D H:m")
     }
   },
   methods: {
     readPostList() {
       this.$store.dispatch('GET_POST_LIST', {})
-        .then((data) => {
-          this.postList = data.postList;
+        .then(result => {
+          this.postList = result.postList;
         })
         .catch(({message}) => {
           this.$log.error("message : ", message);

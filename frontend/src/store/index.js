@@ -21,7 +21,15 @@ export default new Vuex.Store({
               }
           }
         });
-    }
+    },
+    CREATE_POST(context, {title, content}) {
+      return axios.post('/post', {
+        title, content
+      })
+        .then(result => {
+          return result;
+        });
+    },
   },
   modules: {
   }
