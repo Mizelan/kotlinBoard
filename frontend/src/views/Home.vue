@@ -70,7 +70,7 @@ export default {
           this.postList = data.postList;
         })
         .catch(({message}) => {
-          console.log("message : ", message);
+          this.$log.error("message : ", message);
         });
     }
   }
