@@ -2,13 +2,13 @@
   <div class="container-fluid">
     <div class="row">
       <div class="col-12">
-        <h1 id="page_title" style="border-bottom: 1px solid gold; padding-bottom: 5px;">{{page_title}}</h1>
+        <h1 id="post_title" style="border-bottom: 1px solid gold; padding-bottom: 5px;">{{title}}</h1>
       </div>
       <div class="col-12 text-right">
-          <span id="page_created_user_id" style="margin-right: 5px; font-weight: bolder;">
+          <span id="post_created_user_id" style="margin-right: 5px; font-weight: bolder;">
             {{postId}}
           </span>
-        <span id="page_created_at">
+        <span id="post_created_at">
             {{createdAt | formatDate}}
           </span>
       </div>
@@ -24,7 +24,7 @@
 <script>
   import SimpleMDE from 'simplemde';
   import 'simplemde/dist/simplemde.min.css'
-  import moment from 'moment'
+  import FilterHelpers from '@/utils/filter-helper.js'
 
   export default {
     name: "view",
@@ -37,16 +37,13 @@
     },
     props: ['postId'],
     mounted() {
-      this.getBbsData();
+      this.readPost();
     },
     filters: {
-      formatDate: function(value) {
-        if (value)
-          return moment(String(value)).local().format("YYYY/M/D H:m")
-      }
+      formatDate: FilterHelpers.toLocalDateTimeString
     },
     methods: {
-      getBbsData: function () {
+      readPost: function () {
         this.simpleMde = new SimpleMDE({
           element: document.getElementById("bbsDetail"),
           spellChecker: false,
@@ -60,8 +57,6 @@
             this.simpleMde.value(result.content);
             this.simpleMde.togglePreview();
             this.createdAt = result.createdAt;
-
-            console.log(result)
           })
           .catch(({message}) => {
             console.log("err : ", message);

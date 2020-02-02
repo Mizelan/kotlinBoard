@@ -36,7 +36,7 @@
 <script>
 // @ is an alias to /src
 //import HelloWorld from '@/components/HelloWorld.vue'
-import moment from 'moment'
+import FilterHelpers from '@/utils/filter-helper.js'
 
 export default {
   name: 'home',
@@ -52,25 +52,14 @@ export default {
     this.readPostList();
   },
   filters: {
-    formatShortString: function(str) {
-      if (str.length < 10)
-        return str;
-      
-      return str.substring(0, 7) + "...";
-    },
-    formatDate: function(value) {
-      if (value)
-        return moment(String(value)).local().format("YYYY/M/D H:m")
-    }
+    formatShortString: FilterHelpers.toStringEllipsis,
+    formatDate: FilterHelpers.toLocalDateTimeString
   },
   methods: {
     readPostList() {
       this.$store.dispatch('READ_POST_LIST', {})
         .then(result => {
           this.postList = result.postList;
-        })
-        .catch(({message}) => {
-          this.$log.error("message : ", message);
         });
     }
   }

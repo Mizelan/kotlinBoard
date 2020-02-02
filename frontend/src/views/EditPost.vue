@@ -27,6 +27,7 @@
 
   import SimpleMDE from 'simplemde';
   import 'simplemde/dist/simplemde.min.css'
+  import HttpStatus from 'http-status-codes'
 
   export default {
     data() {
@@ -48,40 +49,39 @@
         this.title = result.title;
         this.simpleMde.value(result.content);
       })
-      .catch(({message}) => {
-        this.$log.error("err : ", message);
-      });
     },
     methods: {
       saveData() {
         const title = this.title;
         const content = this.simpleMde.value();
+        const postId = this.postId
 
-        if (this.mode === 'create') {
-          this.$store.dispatch('CREATE_POST', {title, content})
+        switch (this.mode) {
+          case 'create':
+            this.$store.dispatch('CREATE_POST', {title, content})
+              .then(result => {
+                if (result.status === HttpStatus.OK)
+                  this.returnToHomePath()
+              })
+            break;
+          case 'modify':
+            this.$store.dispatch('UPDATE_POST', {postId, title, content})
             .then(result => {
-              if (result.status === 200) {
-                router.push('/')
-              }
+              if (result.status === HttpStatus.OK)
+                this.returnToHomePath()
             })
-            .catch(({message}) => {
-              this.$log.error("err : ", message);
-            });
-        } else if (this.mode === 'modify') {
-          const postId = this.postId
-          this.$store.dispatch('UPDATE_POST', {postId, title, content})
-            .then(result => {
-              if (result.status === 200) {
-                router.push('/')
-              }
-            })
-            .catch(({message}) => {
-              this.$log.error("err : ", message);
-            });
+            break;
+          default:
+            this.$log.error(`unknown edit post mode ${this.mode}.`);
         }
+      },
+      returnToHomePath() {
+        router.push('/')
       }
     }
   }
+
+  
 </script>
 
 <style scoped>
