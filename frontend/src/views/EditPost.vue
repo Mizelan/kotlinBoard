@@ -35,10 +35,21 @@
         simpleMde: null
       }
     },
+    props: ['mode', 'postId'],
     mounted() {
       this.simpleMde = new SimpleMDE({
         element: document.getElementById("post_textarea"),
         spellChecker: false,
+      });
+
+      const postId = this.postId
+      this.$store.dispatch('READ_POST', {postId})
+      .then(result => {
+        this.title = result.title;
+        this.simpleMde.value(result.content)
+      })
+      .catch(({message}) => {
+        this.$log.error("err : ", message);
       });
     },
     methods: {
@@ -46,15 +57,28 @@
         const title = this.title;
         const content = this.simpleMde.value();
 
-        this.$store.dispatch('CREATE_POST', {title, content})
-          .then(result => {
-            if (result.status === 200) {
-              router.push('/')
-            }
-          })
-          .catch(({message}) => {
-            this.$log.error("err : ", message);
-          });
+        if (this.mode === 'create') {
+          this.$store.dispatch('CREATE_POST', {title, content})
+            .then(result => {
+              if (result.status === 200) {
+                router.push('/')
+              }
+            })
+            .catch(({message}) => {
+              this.$log.error("err : ", message);
+            });
+        } else if (this.mode === 'modify') {
+          const postId = this.postId
+          this.$store.dispatch('UPDATE_POST', {postId, title, content})
+            .then(result => {
+              if (result.status === 200) {
+                router.push('/')
+              }
+            })
+            .catch(({message}) => {
+              this.$log.error("err : ", message);
+            });
+        }
       }
     }
   }

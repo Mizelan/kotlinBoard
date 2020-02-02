@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
-import Create from '../views/Create.vue'
+import EditPost from '../views/EditPost.vue'
 
 Vue.use(VueRouter)
 
@@ -14,7 +14,14 @@ const routes = [
   {
     path: '/create',
     name: 'create',
-    component: Create
+    component: EditPost,
+    props: {mode: 'create'}
+  },
+  {
+    path: '/edit/:postId',
+    name: 'edit',
+    component: EditPost,
+    props: (route) => ({mode: 'modify', postId: route.params.postId })
   },
   {
     path: '/about',

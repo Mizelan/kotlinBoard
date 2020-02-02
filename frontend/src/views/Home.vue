@@ -12,7 +12,7 @@
         </h4>
         <ul class="timeline">
           <li v-for="(data) in postList" v-bind:key="data.id" class="border-bottom pb-1">
-            <router-link :to="{path: '/post/'+ data.id}">{{data.title}}</router-link>
+            <router-link :to="{path: '/'+ data.id}">{{data.title}}</router-link>
 
             <span href="#" class="float-right">{{data.createdAt | formatDate}}</span>
             <p class="mb-1 pt-2">
@@ -21,7 +21,7 @@
             <p>
               <span class="float-right">
                 {{data.id}} |
-                <router-link :to="{path: '/post/write/'+ data.id}"
+                <router-link :to="{path: '/edit/'+ data.id}"
                              class="btn btn-sm btn-warning">수정</router-link>
               </span>
             </p>
@@ -65,7 +65,7 @@ export default {
   },
   methods: {
     readPostList() {
-      this.$store.dispatch('GET_POST_LIST', {})
+      this.$store.dispatch('READ_POST_LIST', {})
         .then(result => {
           this.postList = result.postList;
         })

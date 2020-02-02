@@ -12,13 +12,21 @@ export default new Vuex.Store({
   mutations: {
   },
   actions: {
-    GET_POST_LIST(context) {
+    READ_POST_LIST(context) {
       return axios.get('/post')
         .then(result => {
           if (result.status === 200) {
               return {
                 "postList": result.data
               }
+          }
+        });
+    },
+    READ_POST(context, {postId}) {
+      return axios.get(`/post/${postId}`)
+        .then(result => {
+          if (result.status === 200) {
+              return result.data
           }
         });
     },
@@ -30,6 +38,14 @@ export default new Vuex.Store({
           return result;
         });
     },
+    UPDATE_POST(context, {postId, title, content}) {
+      return axios.put(`/post/${postId}`, {
+        title, content
+      })
+        .then(result => {
+          return result;
+        });
+    }
   },
   modules: {
   }
