@@ -5,7 +5,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @RestController
-@RequestMapping("/post")
+@RequestMapping("/api/post")
 class PostController(val postRepository: PostRepository, val postService: PostService) {
     @GetMapping
     fun getAll() : ResponseEntity<List<Post>> {

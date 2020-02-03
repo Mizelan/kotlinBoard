@@ -1,4 +1,5 @@
  /* eslint-disable no-unused-vars */
+ /* eslint-disable no-console */
  
 import Vue from 'vue'
 import Vuex from 'vuex'
@@ -21,7 +22,7 @@ export default new Vuex.Store({
   },
   actions: {
     READ_POST_LIST(context) {
-      return axios.get('/post')
+      return axios.get('/api/post')
         .then(result => {
           if (result.status === 200) {
               return {
@@ -31,7 +32,7 @@ export default new Vuex.Store({
         });
     },
     READ_POST(context, {postId}) {
-      return axios.get(`/post/${postId}`)
+      return axios.get(`/api/post/${postId}`)
         .then(result => {
           if (result.status === 200) {
               return result.data
@@ -39,7 +40,7 @@ export default new Vuex.Store({
         });
     },
     CREATE_POST(context, {title, content}) {
-      return axios.post('/post', {
+      return axios.post('/api/post', {
         title, content
       })
       .then(result => {
@@ -47,7 +48,7 @@ export default new Vuex.Store({
       });
     },
     UPDATE_POST(context, {postId, title, content}) {
-      return axios.put(`/post/${postId}`, {
+      return axios.put(`/api/post/${postId}`, {
         title, content
       })
       .then(result => {
