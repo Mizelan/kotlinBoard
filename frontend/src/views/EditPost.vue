@@ -43,12 +43,9 @@
         spellChecker: false,
       });
 
-      const postId = this.postId
-      this.$store.dispatch('READ_POST', {postId})
-      .then(result => {
-        this.title = result.title;
-        this.simpleMde.value(result.content);
-      })
+      if (this.mode === 'modify') {
+        this.readPost(this.postId);
+      }      
     },
     methods: {
       saveData() {
@@ -58,18 +55,10 @@
 
         switch (this.mode) {
           case 'create':
-            this.$store.dispatch('CREATE_POST', {title, content})
-              .then(result => {
-                if (result.status === HttpStatus.OK)
-                  this.returnToHomePath()
-              })
+            this.createPost({title, content});
             break;
           case 'modify':
-            this.$store.dispatch('UPDATE_POST', {postId, title, content})
-            .then(result => {
-              if (result.status === HttpStatus.OK)
-                this.returnToHomePath()
-            })
+            this.updatePost({postId, title, content});
             break;
           default:
             this.$log.error(`unknown edit post mode ${this.mode}.`);
@@ -77,11 +66,30 @@
       },
       returnToHomePath() {
         router.push('/')
+      },
+      readPost(postId) {
+        this.$store.dispatch('READ_POST', {postId})
+        .then(result => {
+          this.title = result.title;
+          this.simpleMde.value(result.content);
+        });
+      },
+      createPost(params) {
+        this.$store.dispatch('CREATE_POST', params)
+        .then(result => {
+          if (result.status === HttpStatus.OK)
+            this.returnToHomePath()
+        });
+      },
+      updatePost(params) {
+        this.$store.dispatch('UPDATE_POST', params)
+        .then(result => {
+          if (result.status === HttpStatus.OK)
+            this.returnToHomePath()
+        });
       }
     }
   }
-
-  
 </script>
 
 <style scoped>

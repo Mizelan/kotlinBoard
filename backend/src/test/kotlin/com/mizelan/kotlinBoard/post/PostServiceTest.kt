@@ -23,7 +23,7 @@ class PostServiceTest(
         val created1 = postRepository.save(Post(title = "title1", content = "content1"))
         val created2 = postRepository.save(Post(title = "title2", content = "content2"))
 
-        val actual = postService.getAllPosts()
+        val actual = postService.getPosts()
         assertEquals(2, actual.count())
         assertEquals("title1", actual[0].title)
         assertEquals("title2", actual[1].title)

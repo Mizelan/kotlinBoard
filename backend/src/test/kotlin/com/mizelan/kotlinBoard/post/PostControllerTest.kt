@@ -3,7 +3,6 @@ package com.mizelan.kotlinBoard.post
 import com.google.gson.Gson
 import org.junit.jupiter.api.Test
 import org.mockito.BDDMockito.*
-import org.mockito.Mockito
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
@@ -25,7 +24,7 @@ class PostControllerTest {
 
     @Test
     fun getAll() {
-        given(postService.getAllPosts())
+        given(postService.getPosts())
             .willReturn(listOf(
                 Post(1,"one", "one"),
                 Post(2,"two", "two"),
@@ -36,7 +35,7 @@ class PostControllerTest {
                 .andExpect(jsonPath("\$.length()").value(3))
                 .andDo(print())
 
-        then(postService).should(atMostOnce()).getAllPosts()
+        then(postService).should(atMostOnce()).getPosts()
         then(postService).shouldHaveNoMoreInteractions()
     }
 

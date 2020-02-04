@@ -1,5 +1,7 @@
 package com.mizelan.kotlinBoard.post
 
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Sort
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -7,10 +9,15 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("/api/post")
 class PostController(val postRepository: PostRepository, val postService: PostService) {
-    @GetMapping
-    fun getAll() : ResponseEntity<List<Post>> {
-        var result = postService.getAllPosts()
-        return ResponseEntity(result, HttpStatus.OK)
+
+    @GetMapping // TODO: 요청값 범위 체크
+    fun getAll(page: Int, postCount: Int) : ResponseEntity<Map<String, Any>> {
+        val dataResult = postService.getPosts(
+                PageRequest.of(page, postCount, Sort.by(Sort.Direction.DESC, "id")))
+        var responseData = mapOf(
+                "postList" to dataResult.content,
+                "pageInfo" to PaginationInfo(dataResult.number, dataResult.totalPages, 5)) // TODO: countOfPage를 외부 설정값으로 옮기기
+        return ResponseEntity(responseData, HttpStatus.OK)
     }
 
     @GetMapping(path = ["/{id}"])

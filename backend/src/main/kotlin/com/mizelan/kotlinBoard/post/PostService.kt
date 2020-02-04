@@ -1,6 +1,8 @@
 package com.mizelan.kotlinBoard.post
 
 import javassist.NotFoundException
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -10,7 +12,7 @@ import java.util.*
 @Transactional
 class PostService (val postRepository: PostRepository) {
 
-    fun getAllPosts() : List<Post> = postRepository.findAll().toList()
+    fun getPosts(pageable: Pageable) : Page<Post> = postRepository.findAll(pageable)
 
     fun getPost(id: Long) = postRepository.findByIdOrNull(id)
 
