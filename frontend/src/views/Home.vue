@@ -40,15 +40,21 @@ export default {
   components: {
     Pagination
   },
+  props: ['pageNumber'],
   computed: mapState({
     postList: 'postList',
     pageInfo: 'pageInfo'
   }),
+  watch: {
+    '$route' (to, from) {
+      store.dispatch("READ_POST_LIST", to.params.pageNumber || 1);
+    }
+  },
   beforeRouteEnter(to, from, next) {
-      store.dispatch("READ_POST_LIST", 1)
-              .then(result => {
-                next();
-              });
+    store.dispatch("READ_POST_LIST", to.params.pageNumber || 1)
+            .then(result => {
+              next();
+            });
   },
   filters: {
     formatShortString: FilterHelpers.toStringEllipsis,

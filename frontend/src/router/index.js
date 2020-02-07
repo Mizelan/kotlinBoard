@@ -14,6 +14,12 @@ const routes = [
     component: Home
   },
   {
+    path: '/board/:pageNumber',
+    name: 'board',
+    component: Home,
+    props: (route) => ({ pageNumber: route.params.pageNumber })
+  },
+  {
     path: '/post/create',
     name: 'create',
     component: EditPost,

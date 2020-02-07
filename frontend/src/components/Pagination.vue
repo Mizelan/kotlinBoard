@@ -15,7 +15,9 @@
             :class="{active: isActivePage(pageNumber)}"
             v-bind:key="pageNumber"
           >
-            <a class="page-link" @click="movePage(pageNumber)">{{pageNumber}}</a>
+            <router-link :to="`/board/${pageNumber}`">
+              <a class="page-link">{{pageNumber}}</a>
+            </router-link>
           </li>
 
           <li v-if=!isLastPageGroup() class="page-item">
