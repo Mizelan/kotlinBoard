@@ -23,13 +23,15 @@ Vue.use(VueLogger, {
 Vue.use(BootstrapVue)
 Vue.use(IconsPlugin)
 
-axios.interceptors.response.use(response => {
-  console.log(response)
-  return response;
-}, error => {
-  console.error("axios response error : ", error);
-  return Promise.reject(error)
-})
+if (!isProduction) {
+  axios.interceptors.response.use(response => {
+    console.log(response)
+    return response;
+  }, error => {
+    console.error("axios response error : ", error);
+    return Promise.reject(error)
+  })
+}
 
 Vue.config.productionTip = false
 new Vue({
