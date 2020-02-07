@@ -1,9 +1,9 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
-import EditPost from '../views/EditPost.vue'
-import ViewPost from '../views/ViewPost.vue'
-import NotFound from '../views/Errors/NotFound.vue'
+import Board from '../components/board/Board.vue'
+import EditPost from '../components/post/EditPost.vue'
+import ViewPost from '../components/post/ViewPost.vue'
+import NotFound from '../components/errors/NotFound.vue'
 
 Vue.use(VueRouter)
 
@@ -11,12 +11,12 @@ const routes = [
   {
     path: '/',
     name: 'home',
-    component: Home
+    component: Board
   },
   {
     path: '/board/:pageNumber',
     name: 'board',
-    component: Home,
+    component: Board,
     props: (route) => ({ pageNumber: route.params.pageNumber })
   },
   {
@@ -43,7 +43,7 @@ const routes = [
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
+    component: () => import(/* webpackChunkName: "about" */ '../components/about/About.vue')
   },
   { path: '*', component: NotFound }
 ]

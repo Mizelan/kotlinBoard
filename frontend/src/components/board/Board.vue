@@ -33,10 +33,10 @@
   import { mapState } from 'vuex'
   import store from '@/store/index.js'
   import FilterHelpers from '@/utils/filter-helper.js';
-  import Pagination from '@/components/Pagination';
+  import Pagination from '@/components/board/Pagination';
 
 export default {
-  name: "home",
+  name: "board",
   components: {
     Pagination
   },

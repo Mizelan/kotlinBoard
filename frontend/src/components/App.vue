@@ -2,7 +2,9 @@
   <div id="app">
     <div id="nav">
       <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link> // TODO: github ReadMe.md 를 표시하기
+
+      <!-- TODO: github ReadMe.md 를 표시하기-->
+      <router-link to="/about">About</router-link>
     </div>
     <router-view/>
   </div>
