@@ -27,7 +27,7 @@
   import FilterHelpers from '@/utils/filter-helper.js'
 
   export default {
-    name: "view",
+    name: "ViewPost",
     data() {
       return {
         simpleMde: null,
