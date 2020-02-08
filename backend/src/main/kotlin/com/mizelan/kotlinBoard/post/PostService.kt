@@ -29,7 +29,7 @@ class PostService (val postRepository: PostRepository) {
                 entity.copy(
                         title = request.title,
                         content = request.content,
-                        createdAt = entity.createdAt ?: Date(),
+                        createdAt = entity.createdAt,
                         updatedAt = Date()
                 ))
 
