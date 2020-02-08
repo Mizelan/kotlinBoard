@@ -57,9 +57,6 @@
             this.simpleMde.value(result.content);
             this.simpleMde.togglePreview();
             this.createdAt = result.createdAt;
-          })
-          .catch(({message}) => {
-            console.log("err : ", message);
           });
       }
     }
