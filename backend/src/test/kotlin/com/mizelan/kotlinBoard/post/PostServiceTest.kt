@@ -6,6 +6,8 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Sort
 
 @DataJpaTest
 class PostServiceTest(
@@ -20,10 +22,11 @@ class PostServiceTest(
 
     @Test
     fun getAllPosts() {
-        val created1 = postRepository.save(Post(title = "title1", content = "content1"))
-        val created2 = postRepository.save(Post(title = "title2", content = "content2"))
+        postRepository.save(Post(title = "title1", content = "content1"))
+        postRepository.save(Post(title = "title2", content = "content2"))
 
-        val actual = postService.getPosts()
+        val pageable = PageRequest.of(0, 10)
+        val actual = postService.getPosts(pageable).toList()
         assertEquals(2, actual.count())
         assertEquals("title1", actual[0].title)
         assertEquals("title2", actual[1].title)
@@ -44,7 +47,7 @@ class PostServiceTest(
         var actual =
                 postService.createPost(CreatePostRequest("test-title", "test-content"))
 
-        assertNotNull(actual!!.id)
+        assertNotNull(actual.id)
         assertEquals("test-title", actual.title)
         assertEquals("test-content", actual.content)
     }
