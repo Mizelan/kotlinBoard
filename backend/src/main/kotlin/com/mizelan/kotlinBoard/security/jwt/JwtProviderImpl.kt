@@ -23,10 +23,10 @@ class JwtProviderImpl : JwtProvider {
     private val secretKey: SecretKey = Keys.secretKeyFor(SignatureAlgorithm.HS512)
 
     override fun generateToken(authentication: Authentication): String {
-        val authentication = SecurityContextHolder.getContext().authentication
+        val authorities = authentication.authorities.joinToString(",")
         return Jwts.builder()
                 .setSubject(authentication.name)
-                .claim("auth", authentication)
+                .claim("authorities", authorities)
                 .claim("createdAt", Date())
                 .signWith(secretKey, SignatureAlgorithm.HS512)
                 .setExpiration(LocalDateTime.now().plusMinutes(tokenExpireMinute!!).toDateTime())
@@ -46,7 +46,7 @@ class JwtProviderImpl : JwtProvider {
 
         val principal = claims.subject
         val credentials = null
-        val authorities = claims["auth"].toString().split(',')
+        val authorities = claims["authorities"].toString().split(',')
                 .map { SimpleGrantedAuthority(it) }
 
         return UsernamePasswordAuthenticationToken(principal, credentials, authorities) // TODO: credentials 알아보기

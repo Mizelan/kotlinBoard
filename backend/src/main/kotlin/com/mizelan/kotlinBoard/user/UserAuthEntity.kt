@@ -6,6 +6,7 @@ import org.hibernate.annotations.UpdateTimestamp
 import java.time.LocalDateTime
 import javax.persistence.*
 
+// TODO: userEntity와 함쳐도 되지 않을까?
 @Entity
 @Table(name = "user_auth")
 data class UserAuthEntity (

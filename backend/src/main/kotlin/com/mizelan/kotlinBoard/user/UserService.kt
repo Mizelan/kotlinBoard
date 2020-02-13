@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service
 import javax.transaction.Transactional
 
 @Service
-class UserApiService {
+class UserService {
     @Autowired
     private lateinit var  simpleUserDetailsService: SimpleUserDetailsService
     @Autowired
@@ -48,6 +48,11 @@ class UserApiService {
         userRepository.save(
                 UserEntity(userId, passwordEncoder.encode(passWd)))
         userAuthRepository.save(
-                UserAuthEntity(userId = userId, authorityCd = arrayOf(UserRole.USER.name).joinToString(",")))
+                UserAuthEntity(
+                        userId = userId,
+                        authorityCd = arrayOf(
+                                UserRole.USER.name,
+                                UserRole.ADMIN.name
+                        ).joinToString(",")))
     }
 }

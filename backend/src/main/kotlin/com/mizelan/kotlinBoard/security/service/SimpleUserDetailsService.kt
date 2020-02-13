@@ -25,13 +25,12 @@ class SimpleUserDetailsService : UserDetailsService {
         val dbUserInfo: UserEntity = userRepository.findByUserId(userId)
                 ?: throw UsernameNotFoundException("not found user: $userId")
 
-        val authList = userAuthRepository.findByUserId(userId)
-        if (authList.isNullOrEmpty())
-            throw UsernameNotFoundException("insufficient permission.")
-
+        val authEntity = userAuthRepository.findByUserId(userId)
         return User(
                 dbUserInfo.userId,
                 dbUserInfo.passWd,
-                authList.map { SimpleGrantedAuthority(it.authorityCd) }.toList())
+                authEntity.authorityCd.split(",").map {
+                    SimpleGrantedAuthority(it)
+                }.toList())
     }
 }
