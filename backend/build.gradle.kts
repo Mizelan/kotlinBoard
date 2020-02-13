@@ -29,6 +29,9 @@ dependencies {
 		exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
 	}
 	testImplementation(group = "com.h2database", name = "h2", version = "1.4.197") // DataJpaTest에 필요
+	implementation("io.jsonwebtoken:jjwt-api:0.11.0")
+	runtimeOnly("io.jsonwebtoken:jjwt-impl:0.11.0")
+	runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.11.0")
 }
 
 tasks.withType<Test> {

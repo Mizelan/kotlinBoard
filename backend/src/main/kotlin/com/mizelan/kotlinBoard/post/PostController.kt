@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping("/api/post")
 class PostController(val postRepository: PostRepository, val postService: PostService) {
 
+    // TODO: 페이지는 0부터 시작한다. 1부터 시작하는 코드들 바꿀 것
     @GetMapping // TODO: 요청값 범위 체크
     fun getAll(page: Int, postCount: Int) : ResponseEntity<Map<String, Any>> {
         val dataResult = postService.getPosts(

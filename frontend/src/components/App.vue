@@ -4,6 +4,7 @@
       <router-link to="/">Home</router-link> |
 
       <!-- TODO: github ReadMe.md 를 표시하기-->
+      <!-- TODO: 페이지 상단에 페이지 로딩 프로그레스바 추가하기-->
       <router-link to="/about">About</router-link>
     </div>
     <router-view/>
