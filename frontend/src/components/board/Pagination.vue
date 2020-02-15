@@ -37,12 +37,12 @@ import { mapState } from 'vuex'
 
 export default {
   name: "Pagination",
-  computed: mapState({
+  computed: mapState('post', {
     pageInfo: 'pageInfo'
   }),
   methods: {
     movePage(pageIndex) {
-      this.$store.dispatch("READ_POST_LIST", pageIndex);
+      this.$store.dispatch("post/READ_POST_LIST", pageIndex);
     },
     isActivePage(pageNumber) {
       return pageNumber === this.pageInfo.currentPage;

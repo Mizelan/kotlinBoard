@@ -51,7 +51,7 @@
         });
 
         const postId = this.postId
-        this.$store.dispatch('READ_POST', {postId})
+        this.$store.dispatch('post/READ_POST', {postId})
           .then(result => {
             this.title = result.title;
             this.simpleMde.value(result.content);

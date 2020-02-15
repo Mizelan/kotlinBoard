@@ -68,21 +68,21 @@
         await router.push('/')
       },
       readPost(postId) {
-        this.$store.dispatch('READ_POST', {postId})
+        this.$store.dispatch('post/READ_POST', {postId})
         .then(result => {
           this.title = result.title;
           this.simpleMde.value(result.content);
         });
       },
       createPost(params) {
-        this.$store.dispatch('CREATE_POST', params)
+        this.$store.dispatch('post/CREATE_POST', params)
         .then(result => {
           if (result.status === HttpStatus.OK)
             this.returnToHomePath()
         });
       },
       updatePost(params) {
-        this.$store.dispatch('UPDATE_POST', params)
+        this.$store.dispatch('post/UPDATE_POST', params)
         .then(result => {
           if (result.status === HttpStatus.OK)
             this.returnToHomePath()

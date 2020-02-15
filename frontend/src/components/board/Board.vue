@@ -31,7 +31,7 @@
 <script>
   /* eslint-disable no-unused-vars */
   import { mapState } from 'vuex'
-  import store from '@/store/index.js'
+  import store from '@/state/store'
   import FilterHelpers from '@/utils/filter-helper.js';
   import Pagination from '@/components/board/Pagination';
 
@@ -41,17 +41,17 @@ export default {
     Pagination
   },
   props: ['pageNumber'],
-  computed: mapState({
+  computed: mapState('post', {
     postList: 'postList',
     pageInfo: 'pageInfo'
   }),
   watch: {
     '$route' (to, from) {
-      store.dispatch("READ_POST_LIST", to.params.pageNumber || 1);
+      store.dispatch("post/READ_POST_LIST", to.params.pageNumber || 1);
     }
   },
   beforeRouteEnter(to, from, next) {
-    store.dispatch("READ_POST_LIST", to.params.pageNumber || 1)
+    store.dispatch("post/READ_POST_LIST", to.params.pageNumber || 1)
             .then(result => {
               next();
             });

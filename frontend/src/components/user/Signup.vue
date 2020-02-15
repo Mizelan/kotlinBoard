@@ -40,7 +40,7 @@
                 const passWd = this.passWd;
                 const passWdConfirm = this.passWdConfirm;
 
-                this.$store.dispatch('SIGNUP', {userId, passWd, passWdConfirm})
+                this.$store.dispatch('auth/SIGNUP', {userId, passWd, passWdConfirm})
                     .then(result => {
                         console.log(result)
                         if (result.status === HttpStatus.CREATED) {

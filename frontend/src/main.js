@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import App from './components/App.vue'
 import router from './router'
-import store from './store'
+import store from './state/store'
 import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
 import VueLogger from 'vuejs-logger';
 import axios from 'axios'

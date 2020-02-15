@@ -3,11 +3,12 @@
 import VueJwtDecode from "vue-jwt-decode";
 import axios from "axios";
 import HttpStatus from "http-status-codes";
-import router from "../router";
+import router from "../../router";
 
 const jwtTokenName = "jws";
 
 const authModule = {
+    namespaced: true,
     state: {
     },
     getters: {
@@ -39,14 +40,10 @@ const authModule = {
     },
     mutations: {
         LOGIN(state, {data}) {
-            console.log("LOGIN")
             localStorage.setItem(jwtTokenName, data.data)
         },
         LOGOUT(state) {
-            console.log("LOGOUT")
             localStorage.removeItem(jwtTokenName)
-            localStorage.clear()
-            console.log("remain: " + localStorage.getItem(jwtTokenName))
         }
     },
     actions: {
@@ -58,7 +55,9 @@ const authModule = {
             return axios.post('/api/user/login', form)
                 .then(async ({data}) => {
                     commit('LOGIN', {data});
+                    console.log(1)
                     await router.push("/")
+                    console.log(2)
                 })
                 .catch((error) => {
                     console.log(`login error: ${error}`);
@@ -73,8 +72,8 @@ const authModule = {
             return axios.post('/api/user/signup', form)
                 .then((result) => {
                     return result;
-                }).catch(({data}) => {
-                    console.log("에러 ", data);
+                }).catch((error) => {
+                    console.log(`signup error: + ${error}`);
                 });
         },
         async LOGOUT({commit}) {

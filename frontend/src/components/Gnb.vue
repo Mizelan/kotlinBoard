@@ -38,7 +38,7 @@
         },
         methods: {
             logout() {
-                this.$store.dispatch('LOGOUT', {})
+                this.$store.dispatch('auth/LOGOUT', {})
                     .then((data) => {
                         console.log(data);
                     })

@@ -5,23 +5,20 @@ import Login from '../components/user/Login.vue'
 import EditPost from '../components/post/EditPost.vue'
 import ViewPost from '../components/post/ViewPost.vue'
 import NotFound from '../components/errors/NotFound.vue'
-import store from '../store'
+import store from '../state/store'
 
 Vue.use(VueRouter)
 
 const requireAuth = () => (to, from, next) => {
-  console.log("requireAuth");
-  if (store.getters.isAuthenticated) {
-    console.log("authed");
+  if (store.getters['auth/isAuthenticated']) {
     return next();
   }
 
-  console.log("authed failed");
   next('/login')
 }
 
 const requireAuthAdmin = () => (to, from, next) => {
-  if (store.getters.isAdmin) {
+  if (store.getters['auth/isAdmin']) {
     return next();
   }
 
