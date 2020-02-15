@@ -9,6 +9,7 @@ import javax.persistence.Entity
 import javax.persistence.Id
 import javax.persistence.Table
 
+// TODO: userauth 테이블과 합치기
 // TODO: seq id 추가하기
 @Entity
 @Table(name = "user")

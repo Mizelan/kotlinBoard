@@ -34,11 +34,12 @@ class UserController {
                     .ok()
                     .body(ApiResponse(message = "success",data = token))
         } catch (e: Exception) {
+            // TODO: 암호 틀렸을 떄 예외 따로 처리해 응답하기
             // TODO: 예외 나눠서 처리하기
             //log.error(e.message, e)
             ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(ApiResponse("internal error"))
+                    .body(ApiResponse("internal error: ${e.toString()}"))
         }
     }
 
@@ -64,7 +65,7 @@ class UserController {
             //log.error(e.message, e)
             ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(ApiResponse("internal error"))
+                    .body(ApiResponse("internal error: ${e.toString()}"))
         }
     }
 }
