@@ -10,7 +10,7 @@ import store from '../store'
 Vue.use(VueRouter)
 
 const requireAuth = () => (to, from, next) => {
-  console.log("store.getters.isAuthenticated = " + store.getters.isAuthenticated)
+  console.log("requireAuth");
   if (store.getters.isAuthenticated) {
     console.log("authed");
     return next();
@@ -45,13 +45,14 @@ const routes = [
     name: 'board',
     component: Board,
     props: (route) => ({ pageNumber: route.params.pageNumber }),
-    beforeEnter: requireAuthAdmin()
+    beforeEnter: requireAuth()
   },
   {
     path: '/post/create',
     name: 'create',
     component: EditPost,
-    props: {mode: 'create'}
+    props: {mode: 'create'},
+    beforeEnter: requireAuthAdmin()
   },
   {
     path: '/post/:postId/edit',

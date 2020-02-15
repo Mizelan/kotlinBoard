@@ -4,9 +4,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import axios from 'axios'
 import HttpStatus from 'http-status-codes'
-import router from '../router'
-import AuthHelper from "./auth-helper"
-import VueJwtDecode from "vue-jwt-decode";
+import authModule from './auth'
 
 Vue.use(Vuex)
 
@@ -14,10 +12,6 @@ export default new Vuex.Store({
   strict: process.env.NODE_ENV !== 'production',
 
   state: {
-    auth: {
-      authority: [],
-      jws: null,
-    },
     pageInfo: {
       currentPage: Number,
       firstPage: Number,
@@ -32,35 +26,8 @@ export default new Vuex.Store({
     postCountPerPage: 5,
   },
   getters: {
-    isAdmin(state) {
-      return AuthHelper.isAdmin()
-    },
-    isUser(state) {
-      return AuthHelper.isUser()
-    },
-    isAuthenticated(state) {
-      return localStorage.getItem(AuthHelper.jwtTokenName)
-      //console.log("check: " + (state.auth.jws !== null))
-      //return (state.auth.jws !== null);
-    }
   },
   mutations: {
-    LOGIN(state, {data}) {
-      localStorage.setItem(AuthHelper.jwtTokenName, data.data)
-    },
-    LOGOUT(state) {
-      localStorage.removeItem(AuthHelper.jwtTokenName)
-      state.auth.jws = null;
-    },
-    AUTH_SETTING(state) {
-      try {
-        const jwtToken = localStorage.getItem(AuthHelper.jwtTokenName)
-        this.state.auth = jwtToken ? VueJwtDecode.decode(jwtToken).authorities.split(',') : [];
-        this.state.jws = jwtToken;
-      } catch (error) {
-        console.error(error)
-      }
-    },
     UPDATE_PAGINATION(state, responseData) {
       const pageInfo = responseData.pageInfo;
       this.state.postList = responseData.postList;
@@ -81,37 +48,6 @@ export default new Vuex.Store({
     }
   },
   actions: {
-    LOGIN({commit}, {userId, passWd}) {
-      let form = new FormData();
-      form.append('userId', userId);
-      form.append('passWd', passWd);
-
-      return axios.post('/api/user/login', form)
-          .then(({data}) => {
-            commit('LOGIN', {data});
-            router.push("/");
-
-          }).catch(({data}) => {
-            console.log("에러 ", data);
-          });
-    },
-    SIGNUP({commit}, {userId, passWd, passWdConfirm}) {
-      let form = new FormData();
-      form.append('userId', userId);
-      form.append('passWd', passWd);
-      form.append('confirmPassWd', passWdConfirm);
-
-      return axios.post('/api/user/signup', form)
-          .then((result) => {
-            return result;
-          }).catch(({data}) => {
-            console.log("에러 ", data);
-          });
-    },
-    LOGOUT({commit}) {
-      commit('LOGOUT');
-      router.push('/login');
-    },
     READ_POST_LIST(context, toPage) {
       return axios.get('/api/post', {params: { page: toPage, postCount: this.state.postCountPerPage} })
         .then(response => {
@@ -146,5 +82,6 @@ export default new Vuex.Store({
     }
   },
   modules: {
+    auth: authModule
   }
 })

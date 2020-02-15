@@ -21,8 +21,8 @@
                     </li>
                 </ul>
                 <div class="form-inline mt-2 mt-md-0">
-                    <button class="btn btn-outline-info btn-sm" @click="로그아웃">
-                        LogOut
+                    <button class="btn btn-outline-info btn-sm" @click="logout">
+                        로그아웃
                     </button>
                 </div>
             </div>

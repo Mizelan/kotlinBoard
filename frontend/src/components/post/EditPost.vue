@@ -64,8 +64,8 @@
             this.$log.error(`unknown edit post mode ${this.mode}.`);
         }
       },
-      returnToHomePath() {
-        router.push('/')
+      async returnToHomePath() {
+        await router.push('/')
       },
       readPost(postId) {
         this.$store.dispatch('READ_POST', {postId})

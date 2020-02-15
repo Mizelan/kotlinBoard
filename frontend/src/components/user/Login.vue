@@ -53,7 +53,8 @@
                 const userId = this.userId;
                 const passWd = this.passWd;
 
-                this.$store.dispatch('LOGIN', {userId, passWd});
+                this.$store.dispatch('LOGIN', {userId, passWd})
+                    //.then(() => this.$router.push("/", () => {}))
             }
         }
     }
