@@ -1,23 +1,51 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Board from '../components/board/Board.vue'
+import Login from '../components/user/Login.vue'
 import EditPost from '../components/post/EditPost.vue'
 import ViewPost from '../components/post/ViewPost.vue'
 import NotFound from '../components/errors/NotFound.vue'
+import store from '../store'
 
 Vue.use(VueRouter)
+
+const requireAuth = () => (to, from, next) => {
+  console.log("store.getters.isAuthenticated = " + store.getters.isAuthenticated)
+  if (store.getters.isAuthenticated) {
+    console.log("authed");
+    return next();
+  }
+
+  console.log("authed failed");
+  next('/login')
+}
+
+const requireAuthAdmin = () => (to, from, next) => {
+  if (store.getters.isAdmin) {
+    return next();
+  }
+
+  next('/login')
+}
 
 const routes = [
   {
     path: '/',
     name: 'home',
-    component: Board
+    component: Board,
+    beforeEnter: requireAuth()
+  },
+  {
+    path: '/login',
+    name: 'login',
+    component: Login
   },
   {
     path: '/board/:pageNumber',
     name: 'board',
     component: Board,
-    props: (route) => ({ pageNumber: route.params.pageNumber })
+    props: (route) => ({ pageNumber: route.params.pageNumber }),
+    beforeEnter: requireAuthAdmin()
   },
   {
     path: '/post/create',

@@ -1,15 +1,39 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-
-      <!-- TODO: github ReadMe.md 를 표시하기-->
-      <!-- TODO: 페이지 상단에 페이지 로딩 프로그레스바 추가하기-->
-      <router-link to="/about">About</router-link>
-    </div>
+    <!-- TODO: api 서버가 없을 때 오류 처리-->
+    <!-- TODO: github ReadMe.md 를 표시하기-->
+    <!-- TODO: 페이지 상단에 페이지 로딩 프로그레스바 추가하기-->
+<!--    <div id="nav">-->
+<!--      <router-link to="/">Home</router-link> |-->
+<!--      <router-link to="/about">About</router-link>-->
+<!--    </div>-->
+    <gnb/>
     <router-view/>
   </div>
 </template>
+
+<script>
+  import Gnb from '@/components/Gnb';
+
+  export default {
+    name: "App",
+    components: {
+      Gnb
+    },
+    data() {
+      return {}
+    },
+    methods: {
+      logout() {
+        this.$store.dispatch('LOGOUT', {})
+                .then((data) => {
+                  console.log(data);
+                })
+                .catch(({message}) => this.msg = message)
+      }
+    }
+  }
+</script>
 
 <style lang="scss">
 #app {
