@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import javax.validation.Valid
@@ -19,7 +20,7 @@ class UserController {
 
     @PostMapping("/login")
     fun userLogin(
-            @Valid request: LoginRequest,
+            @RequestBody @Valid request: LoginRequest,
             result: BindingResult
     ): ResponseEntity<ApiResponse> {
 
@@ -28,7 +29,7 @@ class UserController {
             throw RestAPIRequestException(result.toString(), HttpStatus.BAD_REQUEST)
 
         return try {
-            val userDetails = userService.getUserDetails(request.userId, request.passWd)
+            val userDetails = userService.getUserDetails(request.username, request.password)
             val token = userService.generatorToken(userDetails)
             ResponseEntity
                     .ok()
@@ -47,7 +48,7 @@ class UserController {
     // TODO: 이미 있는 유저일 경우의 응답 메세지 추가
     @PostMapping("/signup")
     fun signUp(
-            param: @Valid SignUpRequest,
+            @RequestBody @Valid param: SignUpRequest,
             result: BindingResult
     ): ResponseEntity<ApiResponse> {
 

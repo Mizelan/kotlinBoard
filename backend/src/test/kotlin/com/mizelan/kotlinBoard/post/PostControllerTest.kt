@@ -1,14 +1,22 @@
 package com.mizelan.kotlinBoard.post
 
 import com.google.gson.Gson
+import com.mizelan.kotlinBoard.security.jwt.JwtProvider
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.mockito.ArgumentMatchers
 import org.mockito.BDDMockito.*
 import org.mockito.Mockito
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.data.domain.*
+import org.springframework.data.domain.PageImpl
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Sort
+import org.springframework.security.core.Authentication
+import org.springframework.security.core.authority.SimpleGrantedAuthority
+import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
@@ -68,6 +76,7 @@ class PostControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = ["USER"])
     fun create() {
         val request = CreatePostRequest("title", "content")
         given(postService.createPost(request))
@@ -77,6 +86,7 @@ class PostControllerTest {
                     post("/api/post")
                         .header("Content-type","application/json")
                         .content(Gson().toJson(CreatePostRequest("title", "content"))))
+
                 .andExpect(status().isOk)
                 .andExpect(jsonPath("\$.id").value(123))
                 .andExpect(jsonPath("\$.title").value("title"))
@@ -88,6 +98,7 @@ class PostControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = ["USER"])
     fun update() {
         val request = UpdatePostRequest("title", "content")
         given(postService.updatePost(123, request))
@@ -108,6 +119,7 @@ class PostControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = ["USER"])
     fun delete() {
         willDoNothing().given(postService).deletePost(123)
 

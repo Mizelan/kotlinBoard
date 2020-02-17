@@ -17,12 +17,13 @@
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-secondary" @click="$emit('closeModal', true)">닫기</button>
-            <button type="button" class="btn btn-primary" @click="signup">신청</button>
+            <button type="button" class="btn btn-primary" @click="trySignUp">신청</button>
         </div>
     </div>
 </template>
 
 <script>
+    import { authMethods } from '@/state/helpers'
     import HttpStatus from 'http-status-codes'
 
     export default {
@@ -35,18 +36,22 @@
             }
         },
         methods: {
-            signup() {
+            ...authMethods,
+            trySignUp() {
                 const userId = this.userId;
                 const passWd = this.passWd;
                 const passWdConfirm = this.passWdConfirm;
 
-                this.$store.dispatch('auth/SIGNUP', {userId, passWd, passWdConfirm})
-                    .then(result => {
-                        console.log(result)
-                        if (result.status === HttpStatus.CREATED) {
-                            this.$emit('closeModal', true);
-                        }
-                    })
+                this.signUp({
+                    userId: userId,
+                    passWd: passWd,
+                    confirmPassWd: passWdConfirm})
+                .then(result => {
+                    console.log(result)
+                    if (result.status === HttpStatus.CREATED) {
+                        this.$emit('closeModal', true);
+                    }
+                })
             }
         }
 

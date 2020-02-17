@@ -1,8 +1,6 @@
 package com.mizelan.kotlinBoard.security
 
 import com.mizelan.kotlinBoard.security.jwt.JwtAuthenticationFilter
-import com.mizelan.kotlinBoard.security.jwt.JwtProvider
-import com.mizelan.kotlinBoard.security.jwt.JwtProviderImpl
 import com.mizelan.kotlinBoard.security.service.SimpleUserDetailsService
 import com.mizelan.kotlinBoard.user.UserRole
 import org.springframework.beans.factory.annotation.Autowired
@@ -21,16 +19,15 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
-
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 class SecurityConfig : WebSecurityConfigurerAdapter() {
-    @Bean
-    fun jwtProvider() = JwtProviderImpl()
+    @Autowired
+    lateinit var jwtAuthenticationFilter: JwtAuthenticationFilter
 
     @Autowired
-    private lateinit var simpleUserDetailsService: SimpleUserDetailsService
+    lateinit var simpleUserDetailsService: SimpleUserDetailsService
 
     @Throws(Exception::class)
     override fun configure(http: HttpSecurity) {
@@ -40,15 +37,15 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
         http.exceptionHandling().authenticationEntryPoint {
             req: HttpServletRequest?,
             rsp: HttpServletResponse,
-            e: AuthenticationException? -> rsp.sendError(HttpServletResponse.SC_UNAUTHORIZED)
+            e: AuthenticationException? -> rsp.sendError(HttpServletResponse.SC_UNAUTHORIZED, e.toString())
         }
 
-        http.addFilterBefore(JwtAuthenticationFilter(jwtProvider()),
-                UsernamePasswordAuthenticationFilter::class.java);
+        http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter::class.java);
         http.authorizeRequests()
                 .antMatchers("/", "/css/**", "/js/**", "/favicon.ico").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/user/**").permitAll()
-                .antMatchers("/api/post/**").permitAll()
+                .antMatchers(HttpMethod.GET,"/api/post/**").permitAll()
+                .antMatchers("/api/post/**").hasAnyRole(UserRole.USER.name, UserRole.ADMIN.name)
                 .antMatchers("/api/admin/**").hasAnyRole(UserRole.ADMIN.name)
                 .anyRequest().authenticated()
     }

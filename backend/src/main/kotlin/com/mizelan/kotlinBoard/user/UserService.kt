@@ -24,7 +24,7 @@ class UserService {
     private lateinit var jwtProvider: JwtProvider
 
     fun getUserDetails(userId: String, passWd: String): UserDetails {
-        val userInfo: UserDetails = simpleUserDetailsService.loadUserByUsername(userId)
+        val userInfo = simpleUserDetailsService.loadUserByUsername(userId)
         if (!passwordEncoder.matches(passWd, userInfo.password))
             throw BadCredentialsException("invalid password")
 

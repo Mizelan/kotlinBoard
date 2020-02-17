@@ -5,81 +5,100 @@ import axios from "axios";
 import HttpStatus from "http-status-codes";
 import router from "../../router";
 
-const jwtTokenName = "jws";
+export const state = {
+    currentUser: getSavedState('auth.currentUser'),
+};
 
-const authModule = {
-    namespaced: true,
-    state: {
+export const mutations = {
+    SET_CURRENT_USER(state, jwtToken) {
+        if (jwtToken) {
+            const decoded = VueJwtDecode.decode(jwtToken);
+            state.currentUser = {}
+            state.currentUser.name = decoded.sub;
+            state.currentUser.authorities = decoded.authorities.split(',');
+            state.currentUser.jwtToken = jwtToken;
+            saveState('auth.currentUser', state.currentUser);
+        } else {
+            state.currentUser = null;
+            deleteState('auth.currentUser');
+        }
+
+        setDefaultAuthHeaders(state);
     },
-    getters: {
-        checkAuthority: (state, getters) => (targetAuthority) => {
-            return getters.readAuthorities.includes(targetAuthority);
-        },
-        isAdmin(state, getters) {
-            console.log(getters)
-            return getters.checkAuthority("ADMIN")
-        },
-        isUser(state, getters) {
-            return getters.checkAuthority("USER")
-        },
-        isAuthenticated(state, getters) {
-            return !!getters.readAuthToken;
-        },
-        readAuthToken() {
-            return localStorage.getItem(jwtTokenName)
-        },
-        readAuthorities(getters) {
-            try {
-                const jwtToken = getters.readAuthToken;
-                return jwtToken ? VueJwtDecode.decode(jwtToken).authorities.split(',') : [];
-            } catch (error) {
-                console.error(error)
-                return [];
-            }
+};
+
+export const getters = {
+    loggedIn(state) {
+        return !!state.currentUser
+    },
+    isAdmin(state) {
+        if (state.currentUser) {
+            console.log("admin: yes");
+            return state.currentUser.authorities.includes("ADMIN")
+        } else {
+            console.log("admin: no");
+            return false;
         }
     },
-    mutations: {
-        LOGIN(state, {data}) {
-            localStorage.setItem(jwtTokenName, data.data)
-        },
-        LOGOUT(state) {
-            localStorage.removeItem(jwtTokenName)
+    isUser(state) {
+        if (state.currentUser) {
+            return state.currentUser.authorities.includes("USER")
+        } else {
+            return false;
         }
     },
-    actions: {
-        LOGIN({commit}, {userId, passWd}) {
-            let form = new FormData();
-            form.append('userId', userId);
-            form.append('passWd', passWd);
+};
 
-            return axios.post('/api/user/login', form)
-                .then(async ({data}) => {
-                    commit('LOGIN', {data});
-                    console.log(1)
-                    await router.push("/")
-                    console.log(2)
-                })
-                .catch((error) => {
-                    console.log(`login error: ${error}`);
-                });
-        },
-        SIGNUP({commit}, {userId, passWd, passWdConfirm}) {
-            let form = new FormData();
-            form.append('userId', userId);
-            form.append('passWd', passWd);
-            form.append('confirmPassWd', passWdConfirm);
-
-            return axios.post('/api/user/signup', form)
-                .then((result) => {
-                    return result;
-                }).catch((error) => {
-                    console.log(`signup error: + ${error}`);
-                });
-        },
-        async LOGOUT({commit}) {
-            await router.push('/login')
-        }
+export const actions = {
+    init({ state, dispatch }) {
+        setDefaultAuthHeaders(state)
     },
+    logIn({ commit, state, dispatch, getters }, { username, password } = {}) {
+        
+        // TODO: 기존 인증 정보를 지우지 않아도 처리가 되야 함 (기존 인증 정보로 서버쪽 authFilter에서 문제가 되고 있음)
+        commit('SET_CURRENT_USER', null)
+        console.log("login - clear auth")
+        
+        return axios
+            .post('/api/user/login', { username: username, password: password })
+            .then((response) => {
+                console.warn(`login response: ${response.status}`);
+                const jwtToken = response.data.data;
+                commit('SET_CURRENT_USER', jwtToken);
+                console.log("login - set auth")
+                return jwtToken;
+            })
+            .catch(error => {
+               console.warn(`login error: ${error}`);
+            });
+    },
+    logOut({ commit }) {
+        commit('SET_CURRENT_USER', null)
+    },
+    signUp({commit}, {userId, passWd, confirmPassWd} = {}) {
+        return axios
+            .post('/api/user/signup', {userId, passWd, confirmPassWd})
+            .then((response) => {
+                return response;
+            }).catch((error) => {
+                console.log(`signup error: + ${error}`);
+            });
+    },
+};
+
+function getSavedState(key) {
+    return JSON.parse(window.localStorage.getItem(key))
 }
 
-export default authModule
+function saveState(key, state) {
+    window.localStorage.setItem(key, JSON.stringify(state))
+}
+
+function deleteState(key, state) {
+    window.localStorage.removeItem(key)
+}
+
+function setDefaultAuthHeaders(state) {
+     axios.defaults.headers.common.Authorization =
+         state.currentUser ? `Bearer ${state.currentUser.jwtToken}` : null;
+}

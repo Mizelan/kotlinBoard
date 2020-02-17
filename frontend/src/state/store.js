@@ -3,6 +3,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import modules from './modules'
+import dispatchActionForAllModules from "./dispatch-action-for-all-modules";
 
 Vue.use(Vuex)
 
@@ -12,3 +13,5 @@ const store = new Vuex.Store({
 })
 
 export default store
+
+dispatchActionForAllModules('init')

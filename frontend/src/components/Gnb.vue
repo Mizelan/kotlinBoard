@@ -10,7 +10,7 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarCollapse">
                 <ul class="navbar-nav mr-auto" >
-                    <li class="nav-item dropdown" v-if="$store.getters.isAdmin">
+                    <li class="nav-item dropdown" v-if="isAdmin">
                         <a class="nav-link dropdown-toggle" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             ADMIN
                         </a>
@@ -21,8 +21,8 @@
                     </li>
                 </ul>
                 <div class="form-inline mt-2 mt-md-0">
-                    <button class="btn btn-outline-info btn-sm" @click="logout">
-                        로그아웃
+                    <button class="btn btn-outline-info btn-sm" @click="tryLogOut">
+                        {{loggedIn ? "로그아웃" : "로그인"}}
                     </button>
                 </div>
             </div>
@@ -31,18 +31,24 @@
 </template>
 
 <script>
+    import { authMethods, authComputed } from '@/state/helpers'
+
     export default {
         name: "Gnb",
         data() {
             return {}
         },
+        computed: {
+            ...authComputed
+        },
         methods: {
-            logout() {
-                this.$store.dispatch('auth/LOGOUT', {})
-                    .then((data) => {
-                        console.log(data);
-                    })
-                    .catch(({message}) => this.msg = message)
+            ...authMethods,
+            tryLogOut() {
+                // TODO: 중복 네비게이트 오류가 발생하고 있다. routerHelper를 만들어 현재 경로를 확인하게 만들자.
+                this.logOut().then(() => {
+                    this.$router.push({ name: 'home' })
+                });
+
             }
         }
     }

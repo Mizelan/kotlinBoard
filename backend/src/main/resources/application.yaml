@@ -16,4 +16,4 @@ spring:
     hibernate:
       ddl-auto: update # validate
 security:
-  token-expire-minute: 1
+  token-expire-minute: 60

@@ -6,5 +6,5 @@ import javax.servlet.http.HttpServletRequest
 
 interface JwtProvider {
     fun generateToken(authentication: Authentication): String
-    fun getAuthentication(request: HttpServletRequest): Authentication?
+    fun getAuthentication(jws: String): Authentication?
 }

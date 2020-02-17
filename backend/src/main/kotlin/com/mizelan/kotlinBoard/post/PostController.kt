@@ -1,9 +1,13 @@
 package com.mizelan.kotlinBoard.post
 
+import com.mizelan.kotlinBoard.user.UserRole
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.access.annotation.Secured
+import org.springframework.security.core.annotation.AuthenticationPrincipal
+import org.springframework.security.core.userdetails.User
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -27,8 +31,11 @@ class PostController(val postRepository: PostRepository, val postService: PostSe
         return ResponseEntity(result, HttpStatus.OK)
     }
 
+    //@Secured("ROLE_USER") // TODO: Secured로 메소드 단위 인가하기  
     @PostMapping
-    fun create(@RequestBody request: CreatePostRequest): ResponseEntity<Post> {
+    fun create(
+            //@AuthenticationPrincipal activeUser: User,
+            @RequestBody request: CreatePostRequest): ResponseEntity<Post> {
         var result = postService.createPost(request)
         return ResponseEntity(result, HttpStatus.OK)
     }

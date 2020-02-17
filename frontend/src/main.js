@@ -25,10 +25,14 @@ Vue.use(IconsPlugin)
 
 if (!isProduction) {
   axios.interceptors.response.use(response => {
-    console.log(response)
+    if (!isProduction) {
+      console.log(response)
+    }
     return response;
   }, error => {
-    console.error("axios response error : ", error);
+    if (!isProduction) {
+      console.warn(`axios response error : ${error}`);
+    }
     return Promise.reject(error)
   })
 }
