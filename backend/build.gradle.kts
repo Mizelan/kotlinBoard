@@ -33,6 +33,7 @@ dependencies {
 	runtimeOnly("io.jsonwebtoken:jjwt-impl:0.11.0")
 	runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.11.0")
 	testImplementation("org.springframework.security:spring-security-test")
+	implementation("io.github.microutils:kotlin-logging:1.7.8")
 }
 
 tasks.withType<Test> {

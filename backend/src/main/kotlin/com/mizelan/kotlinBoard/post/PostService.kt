@@ -1,6 +1,7 @@
 package com.mizelan.kotlinBoard.post
 
 import javassist.NotFoundException
+import mu.KotlinLogging
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull

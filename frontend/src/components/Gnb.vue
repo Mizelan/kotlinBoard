@@ -45,9 +45,15 @@
             ...authMethods,
             tryLogOut() {
                 // TODO: 중복 네비게이트 오류가 발생하고 있다. routerHelper를 만들어 현재 경로를 확인하게 만들자.
-                this.logOut().then(() => {
-                    this.$router.push({ name: 'home' })
-                });
+                if (this.loggedIn) {
+                    this.logOut().then(() => {
+                        this.$router.push({ name: 'home' })
+                    });
+                }
+                else {
+                    this.$router.push({ name: 'login' })
+                }
+
 
             }
         }

@@ -6,6 +6,7 @@ import io.jsonwebtoken.SignatureAlgorithm
 import io.jsonwebtoken.io.Decoders
 import io.jsonwebtoken.security.Keys
 import javassist.bytecode.ByteArray
+import mu.KotlinLogging
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
@@ -24,15 +25,17 @@ class JwtProviderImpl(
         val tokenExpireMinute: Long = 30
 ) : JwtProvider {
 
+    private val logger = KotlinLogging.logger {}
+
     companion object {
         private val secretKey: SecretKey = Keys.secretKeyFor(SignatureAlgorithm.HS512)
     }
 
     override fun generateToken(authentication: Authentication): String {
+
+        logger.info { "Jwt 토큰 발급: ${authentication.name}"}
+
         val authorities = authentication.authorities.joinToString(",")
-
-        val test = secretKey.encoded.toString(StandardCharsets.UTF_8)
-
         return Jwts.builder()
                 .setSubject(authentication.name)
                 .claim("authorities", authorities)
@@ -44,10 +47,10 @@ class JwtProviderImpl(
     
     override fun getAuthentication(jws: String): Authentication? {
         try {
+            logger.info { "Jwt 인증 시도: ${jws.substring(0, 10)}..."}
+
             if (jws.isEmpty())
                 return null;
-
-            val test = secretKey.encoded.toString(StandardCharsets.UTF_8)
 
             val jwtsParser = Jwts.parserBuilder().setSigningKey(secretKey).build();
             val claims = jwtsParser.parseClaimsJws(jws).body ?: return null;
@@ -61,7 +64,7 @@ class JwtProviderImpl(
 
             return UsernamePasswordAuthenticationToken(principal, credentials, authorities)
         } catch (e: Exception) { // TODO: 예외 구체화 하기
-            // TODO: 로그 남기기
+            logger.warn { e.toString() }
             return null;
         }
          
