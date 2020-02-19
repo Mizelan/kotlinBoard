@@ -34,6 +34,7 @@
   import store from '@/state/store'
   import FilterHelpers from '@/utils/filter-helper.js';
   import Pagination from '@/components/board/Pagination';
+  import {postMethods, readFirstBoardPage} from "../../state/helpers";
 
 export default {
   name: "board",
@@ -45,16 +46,19 @@ export default {
     postList: 'postList',
     pageInfo: 'pageInfo'
   }),
+  methods: {
+    ...postMethods,
+  },
   watch: {
     '$route' (to, from) {
-      store.dispatch("post/READ_POST_LIST", to.params.pageNumber || 1);
+      readFirstBoardPage(to.params.pageNumber || 1)
     }
   },
   beforeRouteEnter(to, from, next) {
-    store.dispatch("post/READ_POST_LIST", to.params.pageNumber || 1)
-            .then(result => {
-              next();
-            });
+    readFirstBoardPage(to.params.pageNumber || 1)
+      .then(result => {
+        next();
+      });
   },
   filters: {
     formatShortString: FilterHelpers.toStringEllipsis,

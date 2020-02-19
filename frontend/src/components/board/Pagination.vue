@@ -34,6 +34,7 @@
 
 <script>
 import { mapState } from 'vuex'
+import {postMethods} from "../../state/helpers";
 
 export default {
   name: "Pagination",
@@ -41,8 +42,9 @@ export default {
     pageInfo: 'pageInfo'
   }),
   methods: {
+    ...postMethods,
     movePage(pageIndex) {
-      this.$store.dispatch("post/READ_POST_LIST", pageIndex);
+      this.readPostList(pageIndex);
     },
     isActivePage(pageNumber) {
       return pageNumber === this.pageInfo.currentPage;

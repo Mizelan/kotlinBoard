@@ -1,6 +1,6 @@
 <template>
     <div class="form-signin bg-light mt-5 shadow-lg bg-white rounded">
-        <b-modal hide-header-close hide-footer id="my-modal" title="회원 가입">
+        <b-modal hide-header-close hide-footer id="register-modal" title="회원 가입">
             <signup @closeModal="closeModal()"/>
         </b-modal>
         <div class="text-center mb-4">
@@ -48,10 +48,10 @@
         methods: {
             ...authMethods,
             openModal() {
-                this.$bvModal.show('my-modal')
+                this.$bvModal.show('register-modal')
             },
             closeModal() {
-                this.$bvModal.hide('my-modal')
+                this.$bvModal.hide('register-modal')
             },
             tryToLogIn() {
                 this.tryingToLogIn = true
@@ -63,7 +63,6 @@
                 })
                     .then(() => {
                         this.tryingToLogIn = false
-                        console.log("loggin ok");
                         // Redirect to the originally requested page, or to the home page
                         this.$router.push(this.$route.query.redirectFrom || { name: 'home' })
                     })

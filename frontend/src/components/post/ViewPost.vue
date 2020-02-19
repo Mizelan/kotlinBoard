@@ -25,6 +25,7 @@
   import SimpleMDE from 'simplemde';
   import 'simplemde/dist/simplemde.min.css'
   import FilterHelpers from '@/utils/filter-helper.js'
+  import {postMethods, readPost} from "../../state/helpers";
 
   export default {
     name: "ViewPost",
@@ -37,21 +38,22 @@
     },
     props: ['postId'],
     mounted() {
-      this.readPost();
+      this.tryReadPost();
     },
     filters: {
       formatDate: FilterHelpers.toLocalDateTimeString
     },
     methods: {
-      readPost: function () {
+      ...postMethods,
+      tryReadPost: function () {
         this.simpleMde = new SimpleMDE({
           element: document.getElementById("bbsDetail"),
           spellChecker: false,
           toolbar: false,
         });
 
-        const postId = this.postId
-        this.$store.dispatch('post/READ_POST', {postId})
+        const postId = this.postId;
+        readPost(postId)
           .then(result => {
             this.title = result.title;
             this.simpleMde.value(result.content);

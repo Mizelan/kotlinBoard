@@ -28,6 +28,7 @@
   import SimpleMDE from 'simplemde';
   import 'simplemde/dist/simplemde.min.css'
   import HttpStatus from 'http-status-codes'
+  import {postMethods, readPost} from "../../state/helpers";
 
   export default {
     data() {
@@ -44,10 +45,11 @@
       });
 
       if (this.mode === 'modify') {
-        this.readPost(this.postId);
+        this.tryReadPost(this.postId);
       }      
     },
     methods: {
+      ...postMethods,
       saveData() {
         const title = this.title;
         const content = this.simpleMde.value();
@@ -55,10 +57,10 @@
 
         switch (this.mode) {
           case 'create':
-            this.createPost({title, content});
+            this.tryCreatePost({title, content});
             break;
           case 'modify':
-            this.updatePost({postId, title, content});
+            this.tryUpdatePost({postId, title, content});
             break;
           default:
             this.$log.error(`unknown edit post mode ${this.mode}.`);
@@ -67,22 +69,22 @@
       async returnToHomePath() {
         await router.push('/')
       },
-      readPost(postId) {
-        this.$store.dispatch('post/READ_POST', {postId})
+      tryReadPost(postId) {
+        readPost(postId)
         .then(result => {
           this.title = result.title;
           this.simpleMde.value(result.content);
         });
       },
-      createPost(params) {
-        this.$store.dispatch('post/CREATE_POST', params)
+      tryCreatePost(params) {
+        this.createPost(params)
         .then(result => {
           if (result.status === HttpStatus.OK)
             this.returnToHomePath()
         });
       },
-      updatePost(params) {
-        this.$store.dispatch('post/UPDATE_POST', params)
+      tryUpdatePost(params) {
+        this.updatePost(params)
         .then(result => {
           if (result.status === HttpStatus.OK)
             this.returnToHomePath()

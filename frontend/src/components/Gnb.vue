@@ -21,7 +21,7 @@
                     </li>
                 </ul>
                 <div class="form-inline mt-2 mt-md-0">
-                    <button class="btn btn-outline-info btn-sm" @click="tryLogOut">
+                    <button class="btn btn-outline-info btn-sm" @click="tryLoginOrLogout">
                         {{loggedIn ? "로그아웃" : "로그인"}}
                     </button>
                 </div>
@@ -43,18 +43,20 @@
         },
         methods: {
             ...authMethods,
-            tryLogOut() {
-                // TODO: 중복 네비게이트 오류가 발생하고 있다. routerHelper를 만들어 현재 경로를 확인하게 만들자.
+            tryLoginOrLogout() {
                 if (this.loggedIn) {
-                    this.logOut().then(() => {
-                        this.$router.push({ name: 'home' })
+                    this.logOut()
+                        .then(() => {
+                            if (this.$router.currentRoute.name !== 'home') {
+                                this.$router.push({ name: 'home' })
+                            }
                     });
                 }
                 else {
-                    this.$router.push({ name: 'login' })
+                    if (this.$router.currentRoute.name !== 'login') {
+                        this.$router.push({ name: 'login' })
+                    }
                 }
-
-
             }
         }
     }

@@ -25,7 +25,7 @@ const postModule = {
     getters: {
     },
     mutations: {
-        UPDATE_PAGINATION(state, responseData) {
+        updatePagination(state, responseData) {
             const pageInfo = responseData.pageInfo;
             state.postList = responseData.postList;
             state.pageInfo.currentPage = pageInfo.currentPage
@@ -45,23 +45,23 @@ const postModule = {
         }
     },
     actions: {
-        READ_POST_LIST({state, commit}, toPage) {
+        readPostList({state, commit}, toPage) {
             return axios.get('/api/post', {params: {page: toPage, postCount: state.postCountPerPage}})
                 .then(response => {
                     if (response.status === HttpStatus.OK) {
-                        commit('UPDATE_PAGINATION', response.data);
+                        commit('updatePagination', response.data);
                         return response.data
                     }
                 });
         },
-        READ_POST(context, {postId}) {
+        readPost(context, {postId}) {
             return axios.get(`/api/post/${postId}`)
                 .then(response => {
                     if (response.status === HttpStatus.OK)
                         return response.data
                 });
         },
-        CREATE_POST(context, {title, content}) {
+        createPost(context, {title, content}) {
             return axios.post('/api/post', {
                 title, content
             })
@@ -69,7 +69,7 @@ const postModule = {
                     return response;
                 });
         },
-        UPDATE_POST(context, {postId, title, content}) {
+        updatePost(context, {postId, title, content}) {
             return axios.put(`/api/post/${postId}`, {
                 title, content
             })

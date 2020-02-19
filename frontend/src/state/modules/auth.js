@@ -10,7 +10,7 @@ export const state = {
 };
 
 export const mutations = {
-    SET_CURRENT_USER(state, jwtToken) {
+    setCurrentUser(state, jwtToken) {
         if (jwtToken) {
             const decoded = VueJwtDecode.decode(jwtToken);
             state.currentUser = {}
@@ -33,10 +33,8 @@ export const getters = {
     },
     isAdmin(state) {
         if (state.currentUser) {
-            console.log("admin: yes");
             return state.currentUser.authorities.includes("ADMIN")
         } else {
-            console.log("admin: no");
             return false;
         }
     },
@@ -56,16 +54,12 @@ export const actions = {
     logIn({ commit, state, dispatch, getters }, { username, password } = {}) {
         
         // TODO: 기존 인증 정보를 지우지 않아도 처리가 되야 함 (기존 인증 정보로 서버쪽 authFilter에서 문제가 되고 있음)
-        commit('SET_CURRENT_USER', null)
-        console.log("login - clear auth")
-        
+        commit('setCurrentUser', null)
         return axios
             .post('/api/user/login', { username: username, password: password })
             .then((response) => {
-                console.warn(`login response: ${response.status}`);
                 const jwtToken = response.data.data;
-                commit('SET_CURRENT_USER', jwtToken);
-                console.log("login - set auth")
+                commit('setCurrentUser', jwtToken);
                 return jwtToken;
             })
             .catch(error => {
@@ -73,7 +67,7 @@ export const actions = {
             });
     },
     logOut({ commit }) {
-        commit('SET_CURRENT_USER', null)
+        commit('setCurrentUser', null)
     },
     signUp({commit}, {userId, passWd, confirmPassWd} = {}) {
         return axios
