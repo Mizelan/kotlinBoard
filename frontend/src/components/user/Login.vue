@@ -29,8 +29,9 @@
 </template>
 
 <script>
-    import { authMethods } from '@/state/helpers'
+    //import { authMethods } from '@/state/helpers'
     import Signup from "./Signup";
+    import {mapActions} from "vuex";
 
     export default {
         name: "Login",
@@ -46,7 +47,7 @@
             }
         },
         methods: {
-            ...authMethods,
+            ...mapActions('auth', ['logIn', 'logOut', 'signUp']), // TODO: (확인 필요) login 페이지에서 새로 고침하면 authMethod로 연결된 메소드들이 null이 된다.
             openModal() {
                 this.$bvModal.show('register-modal')
             },
@@ -57,7 +58,8 @@
                 this.tryingToLogIn = true
                 // Reset the authError if it existed.
                 this.authError = null
-                return this.logIn({
+
+                this.logIn({
                     username: this.username,
                     password: this.password,
                 })
