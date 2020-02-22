@@ -31,7 +31,7 @@
 </template>
 
 <script>
-    import { authMethods, authComputed } from '@/state/helpers'
+    import {mapActions, mapGetters, mapState} from "vuex";
 
     export default {
         name: "Gnb",
@@ -39,10 +39,13 @@
             return {}
         },
         computed: {
-            ...authComputed
+            ...mapState('auth', {
+                currentUser: (state) => state.currentUser,
+            }),
+            ...mapGetters('auth', ['loggedIn', 'isAdmin', 'isUser']),
         },
         methods: {
-            ...authMethods,
+            ...mapActions('auth', ['logIn', 'logOut', 'signUp']),
             tryLoginOrLogout() {
                 if (this.loggedIn) {
                     this.logOut()

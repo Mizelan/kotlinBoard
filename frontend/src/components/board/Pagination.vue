@@ -33,8 +33,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
-import {postMethods} from "../../state/helpers";
+import {mapActions, mapState} from 'vuex'
 
 export default {
   name: "Pagination",
@@ -42,7 +41,7 @@ export default {
     pageInfo: 'pageInfo'
   }),
   methods: {
-    ...postMethods,
+    ...mapActions('post', ['readPostList', 'readPost', 'createPost', 'updatePost']),
     movePage(pageIndex) {
       this.readPostList(pageIndex);
     },

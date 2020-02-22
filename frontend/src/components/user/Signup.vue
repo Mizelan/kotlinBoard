@@ -23,8 +23,8 @@
 </template>
 
 <script>
-    import { authMethods } from '@/state/helpers'
     import HttpStatus from 'http-status-codes'
+    import {mapActions} from "vuex";
 
     export default {
         name: "Signup",
@@ -36,7 +36,7 @@
             }
         },
         methods: {
-            ...authMethods,
+            ...mapActions('auth', ['logIn', 'logOut', 'signUp']),
             trySignUp() {
                 const userId = this.userId;
                 const passWd = this.passWd;

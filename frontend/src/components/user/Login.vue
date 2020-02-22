@@ -29,7 +29,6 @@
 </template>
 
 <script>
-    //import { authMethods } from '@/state/helpers'
     import Signup from "./Signup";
     import {mapActions} from "vuex";
 
@@ -47,7 +46,7 @@
             }
         },
         methods: {
-            ...mapActions('auth', ['logIn', 'logOut', 'signUp']), // TODO: (확인 필요) login 페이지에서 새로 고침하면 authMethod로 연결된 메소드들이 null이 된다.
+            ...mapActions('auth', ['logIn', 'logOut', 'signUp']),
             openModal() {
                 this.$bvModal.show('register-modal')
             },

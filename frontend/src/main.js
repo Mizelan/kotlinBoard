@@ -4,7 +4,6 @@ import router from './router'
 import store from './state/store'
 import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
 import VueLogger from 'vuejs-logger';
-import axios from 'axios'
 
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
@@ -22,20 +21,6 @@ Vue.use(VueLogger, {
 })
 Vue.use(BootstrapVue)
 Vue.use(IconsPlugin)
-
-if (!isProduction) {
-  axios.interceptors.response.use(response => {
-    if (!isProduction) {
-      console.log(response)
-    }
-    return response;
-  }, error => {
-    if (!isProduction) {
-      console.warn(`axios response error : ${error}`);
-    }
-    return Promise.reject(error)
-  })
-}
 
 Vue.config.productionTip = false
 new Vue({

@@ -44,9 +44,9 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
         http.authorizeRequests()
                 .antMatchers("/", "/css/**", "/js/**", "/favicon.ico").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/user/**").permitAll()
-                .antMatchers(HttpMethod.GET,"/api/post/**").permitAll()
-                .antMatchers("/api/post/**").hasAnyRole(UserRole.USER.name, UserRole.ADMIN.name)
-                .antMatchers("/api/admin/**").hasAnyRole(UserRole.ADMIN.name)
+                .antMatchers(HttpMethod.GET,"/api/post","/api/post/**").permitAll()
+                .antMatchers("/api/post/**").hasAnyAuthority(UserRole.USER.name, UserRole.ADMIN.name)
+                .antMatchers("/api/admin/**").hasAnyAuthority(UserRole.ADMIN.name)
                 .anyRequest().authenticated()
     }
 

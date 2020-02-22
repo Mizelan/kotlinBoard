@@ -22,10 +22,11 @@
 </template>
 
 <script>
+  import store from '@/state/store'
   import SimpleMDE from 'simplemde';
   import 'simplemde/dist/simplemde.min.css'
   import FilterHelpers from '@/utils/filter-helper.js'
-  import {postMethods, readPost} from "../../state/helpers";
+  import {mapActions} from "vuex";
 
   export default {
     name: "ViewPost",
@@ -44,7 +45,7 @@
       formatDate: FilterHelpers.toLocalDateTimeString
     },
     methods: {
-      ...postMethods,
+      ...mapActions('post', ['readPostList', 'readPost', 'createPost', 'updatePost']),
       tryReadPost: function () {
         this.simpleMde = new SimpleMDE({
           element: document.getElementById("bbsDetail"),
@@ -53,7 +54,7 @@
         });
 
         const postId = this.postId;
-        readPost(postId)
+        store.dispatch("post/readPost", {postId})
           .then(result => {
             this.title = result.title;
             this.simpleMde.value(result.content);

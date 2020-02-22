@@ -24,11 +24,11 @@
 
 <script>
   import router from '@/router'
-
+  import store from '@/state/store'
   import SimpleMDE from 'simplemde';
   import 'simplemde/dist/simplemde.min.css'
   import HttpStatus from 'http-status-codes'
-  import {postMethods, readPost} from "../../state/helpers";
+  import {mapActions} from "vuex";
 
   export default {
     data() {
@@ -49,7 +49,7 @@
       }      
     },
     methods: {
-      ...postMethods,
+      ...mapActions('post', ['readPostList', 'readPost', 'createPost', 'updatePost']),
       saveData() {
         const title = this.title;
         const content = this.simpleMde.value();
@@ -70,7 +70,7 @@
         await router.push('/')
       },
       tryReadPost(postId) {
-        readPost(postId)
+        store.dispatch("post/readPost", {postId})
         .then(result => {
           this.title = result.title;
           this.simpleMde.value(result.content);

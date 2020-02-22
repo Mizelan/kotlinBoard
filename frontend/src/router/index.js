@@ -9,31 +9,37 @@ import EditPost from '../components/post/EditPost.vue'
 import ViewPost from '../components/post/ViewPost.vue'
 import NotFound from '../components/errors/NotFound.vue'
 import store from '../state/store'
+import axios from "axios";
+import HttpStatus from "http-status-codes";
 
-Vue.use(VueRouter)
+Vue.use(VueRouter);
 
-const requireAuth = () => (to, from, next) => {
-  if (store.getters['auth/loggedIn']) {
-    return next();
-  }
-
-  next('/login')
+const isProduction = process.env.NODE_ENV === 'production';
+if (!isProduction) {
+  axios.interceptors.response.use(response => {
+    console.log(response);
+    return response;
+  }, error => {
+    console.warn(`axios response error : ${error}`);
+    return Promise.reject(error)
+  })
 }
 
-const requireAuthAdmin = () => (to, from, next) => {
-  if (store.getters['auth/isAdmin']) {
-    return next();
+axios.interceptors.response.use(response => response, error => {
+  const status = error.response ? error.response.status : null;
+  console.log("status = " + status)
+  if( status === HttpStatus.UNAUTHORIZED ||
+      status === HttpStatus.METHOD_NOT_ALLOWED) {
+      return router.push('/login', null, null)
   }
-
-  next('/login')
-}
+  return Promise.reject(error);
+});
 
 const routes = [
   {
     path: '/',
     name: 'home',
     component: Board,
-    //beforeEnter: requireAuth()
   },
   {
     path: '/login',
@@ -45,20 +51,20 @@ const routes = [
     name: 'board',
     component: Board,
     props: (route) => ({ pageNumber: route.params.pageNumber }),
-    //beforeEnter: requireAuth()
   },
   {
     path: '/post/create',
     name: 'create',
     component: EditPost,
     props: {mode: 'create'},
-    beforeEnter: requireAuthAdmin()
+    meta: { authorize: ["User"] }
   },
   {
     path: '/post/:postId/edit',
     name: 'edit',
     component: EditPost,
-    props: (route) => ({ mode: 'modify', postId: route.params.postId })
+    props: (route) => ({ mode: 'modify', postId: route.params.postId }),
+    meta: { authorize: ["User"] }
   },
   {
     path: '/post/:postId',
@@ -81,7 +87,29 @@ const router = new VueRouter({
   mode: 'history',
   base: process.env.BASE_URL,
   routes
-})
+});
+
+router.beforeEach((to, from, next) => {
+  // redirect to login page if not logged in and trying to access a restricted page
+  const { authorize } = to.meta;
+
+  if (authorize) {
+    if (!store.getters['auth/loggedIn']) {
+      // not logged in so redirect to login page with the return url
+      return next({ path: '/login', query: { returnUrl: to.path } });
+    }
+
+    const currentUser = store.state['auth/currentUser']
+    // check if route is restricted by role
+    if (authorize.length && !authorize.includes(currentUser.authorities)) {
+      // role not authorised so redirect to home page
+      return next({ path: '/' });
+    }
+  }
+
+  next();
+});
+
 //
 // router.beforeEach((routeTo, routeFrom, next) => {
 //   // If this isn't an initial page load...
