@@ -17,11 +17,11 @@ class PostController(val postRepository: PostRepository, val postService: PostSe
 
     val logger = KotlinLogging.logger {}
 
-    // TODO: 페이지는 0부터 시작한다. 1부터 시작하는 코드들 바꿀 것
     @GetMapping // TODO: 요청값 범위 체크
     fun getAll(page: Int, postCount: Int) : ResponseEntity<Map<String, Any>> {
+        var targetPage = page - 1
         val dataResult = postService.getPosts(
-                PageRequest.of(page, postCount, Sort.by(Sort.Direction.DESC, "id")))
+                PageRequest.of(targetPage, postCount, Sort.by(Sort.Direction.DESC, "id")))
         var responseData = mapOf(
                 "postList" to dataResult.content,
                 "pageInfo" to PaginationInfo(dataResult.number, dataResult.totalPages, 5)) // TODO: countOfPage를 외부 설정값으로 옮기기

@@ -28,16 +28,17 @@ const postModule = {
         updatePagination(state, responseData) {
             const pageInfo = responseData.pageInfo;
             state.postList = responseData.postList;
+            pageInfo.currentPage++;
             state.pageInfo.currentPage = pageInfo.currentPage
             state.pageInfo.currentPageGroup = Math.floor((pageInfo.currentPage - 1) / pageInfo.countOfPage);
-            state.pageInfo.lastPageGroup = Math.floor((pageInfo.maxPage - 1) / pageInfo.countOfPage);
+            state.pageInfo.lastPageGroup = Math.floor((pageInfo.maxPage) / pageInfo.countOfPage);
             state.pageInfo.firstPage = 1;
-            state.pageInfo.lastPage = pageInfo.maxPage - 1;
+            state.pageInfo.lastPage = pageInfo.maxPage;
             state.pageInfo.prevPage = Math.max(1, (state.pageInfo.currentPageGroup * pageInfo.countOfPage));
             state.pageInfo.nextPage = Math.min( pageInfo.maxPage, ((state.pageInfo.currentPageGroup + 1) * pageInfo.countOfPage) + 1);
 
             const showingPageCount = state.pageInfo.currentPageGroup === state.pageInfo.lastPageGroup ?
-                (pageInfo.maxPage - 1) % pageInfo.countOfPage :
+                pageInfo.maxPage % pageInfo.countOfPage :
                 pageInfo.countOfPage;
             const showingStartPage = state.pageInfo.currentPageGroup * pageInfo.countOfPage + 1;
 
