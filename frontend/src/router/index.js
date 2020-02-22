@@ -57,14 +57,14 @@ const routes = [
     name: 'create',
     component: EditPost,
     props: {mode: 'create'},
-    meta: { authorize: ["User"] }
+    meta: { authorize: ["USER"] }
   },
   {
     path: '/post/:postId/edit',
     name: 'edit',
     component: EditPost,
     props: (route) => ({ mode: 'modify', postId: route.params.postId }),
-    meta: { authorize: ["User"] }
+    meta: { authorize: ["USER"] }
   },
   {
     path: '/post/:postId',
@@ -90,19 +90,18 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  // redirect to login page if not logged in and trying to access a restricted page
   const { authorize } = to.meta;
 
   if (authorize) {
     if (!store.getters['auth/loggedIn']) {
-      // not logged in so redirect to login page with the return url
       return next({ path: '/login', query: { returnUrl: to.path } });
     }
 
-    const currentUser = store.state['auth/currentUser']
-    // check if route is restricted by role
-    if (authorize.length && !authorize.includes(currentUser.authorities)) {
-      // role not authorised so redirect to home page
+    const currentUser = store.state.auth.currentUser
+    if (authorize.length &&
+        !currentUser.authorities.some(x => authorize.includes(x))) {
+
+      console.info(`Authorize failed: path=${to.path}, userAuthorties=${currentUser.authorities}, needAuthorize=${authorize}`);
       return next({ path: '/' });
     }
   }
