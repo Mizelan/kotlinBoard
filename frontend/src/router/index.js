@@ -27,9 +27,9 @@ if (!isProduction) {
 
 axios.interceptors.response.use(response => response, error => {
   const status = error.response ? error.response.status : null;
-  console.log("status = " + status)
   if( status === HttpStatus.UNAUTHORIZED ||
       status === HttpStatus.METHOD_NOT_ALLOWED) {
+    store.commit('auth/setCurrentUser', null)
       return router.push('/login', null, null)
   }
   return Promise.reject(error);
@@ -94,7 +94,7 @@ router.beforeEach((to, from, next) => {
 
   if (authorize) {
     if (!store.getters['auth/loggedIn']) {
-      return next({ path: '/login', query: { returnUrl: to.path } });
+      return next({ path: '/login', query: { redirectFrom: to.path } });
     }
 
     const currentUser = store.state.auth.currentUser

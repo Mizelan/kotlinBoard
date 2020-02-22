@@ -52,9 +52,6 @@ export const actions = {
         setDefaultAuthHeaders(state)
     },
     logIn({ commit, state, dispatch, getters }, { username, password } = {}) {
-        
-        // TODO: 기존 인증 정보를 지우지 않아도 처리가 되야 함 (기존 인증 정보로 서버쪽 authFilter에서 문제가 되고 있음)
-        commit('setCurrentUser', null)
         return axios
             .post('/api/user/login', { username: username, password: password })
             .then((response) => {
