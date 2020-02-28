@@ -44,7 +44,6 @@ class PostController(val postRepository: PostRepository, val postService: PostSe
     fun create(
             //@AuthenticationPrincipal activeUser: User,
             @Validated @RequestBody request: CreatePostRequest): ResponseEntity<Post> {
-        logger.info { "포스트 생성: $request"} // TODO: 불필요한 로그, 제거 할 것
         var result = postService.createPost(request)
         return ResponseEntity(result, HttpStatus.OK)
     }

@@ -15,7 +15,7 @@ class PostControllerAdvice {
     @ResponseBody
     fun handleMethodArgumentNotValidException(ex: Exception): ResponseEntity<String> {
 
-        var errorMessage: String? = null
+        var errorMessage: String?
         if (ex is MethodArgumentNotValidException) {
             errorMessage = ex.toString()
         } else {
