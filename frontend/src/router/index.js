@@ -27,6 +27,9 @@ if (!isProduction) {
 
 axios.interceptors.response.use(response => response, error => {
   const status = error.response ? error.response.status : null;
+  if (status === HttpStatus.BAD_REQUEST) {
+    return alert(JSON.stringify(error.response))
+  }
   if( status === HttpStatus.UNAUTHORIZED ||
       status === HttpStatus.METHOD_NOT_ALLOWED) {
     store.commit('auth/setCurrentUser', null)

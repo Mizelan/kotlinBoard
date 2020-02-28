@@ -9,7 +9,9 @@ import org.springframework.http.ResponseEntity
 import org.springframework.security.access.annotation.Secured
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.security.core.userdetails.User
+import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
+import javax.validation.Valid
 
 @RestController
 @RequestMapping("/api/post")
@@ -17,8 +19,10 @@ class PostController(val postRepository: PostRepository, val postService: PostSe
 
     val logger = KotlinLogging.logger {}
 
-    @GetMapping // TODO: 요청값 범위 체크
+    @GetMapping
     fun getAll(page: Int, postCount: Int) : ResponseEntity<Map<String, Any>> {
+        require(page > 0)
+        require(postCount in 1..100)
         var targetPage = page - 1
         val dataResult = postService.getPosts(
                 PageRequest.of(targetPage, postCount, Sort.by(Sort.Direction.DESC, "id")))
@@ -30,6 +34,7 @@ class PostController(val postRepository: PostRepository, val postService: PostSe
 
     @GetMapping(path = ["/{id}"])
     fun getById(@PathVariable("id") id: Long): ResponseEntity<Post> {
+        require(id > 0)
         var result = postService.getPost(id)
         return ResponseEntity(result, HttpStatus.OK)
     }
@@ -38,7 +43,7 @@ class PostController(val postRepository: PostRepository, val postService: PostSe
     @PostMapping
     fun create(
             //@AuthenticationPrincipal activeUser: User,
-            @RequestBody request: CreatePostRequest): ResponseEntity<Post> {
+            @Validated @RequestBody request: CreatePostRequest): ResponseEntity<Post> {
         logger.info { "포스트 생성: $request"} // TODO: 불필요한 로그, 제거 할 것
         var result = postService.createPost(request)
         return ResponseEntity(result, HttpStatus.OK)
@@ -52,6 +57,7 @@ class PostController(val postRepository: PostRepository, val postService: PostSe
 
     @DeleteMapping(path = ["/{id}"])
     fun delete(@PathVariable("id") id: Long): ResponseEntity<Unit> {
+        require(id > 0)
         postService.deletePost(id)
         return ResponseEntity(HttpStatus.OK)
     }

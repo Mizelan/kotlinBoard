@@ -1,7 +1,20 @@
 package com.mizelan.kotlinBoard.post
 
-data class CreatePostRequest(val title: String, val content: String?)
-data class UpdatePostRequest(val title: String, val content: String?)
+import javax.validation.constraints.Min
+import javax.validation.constraints.NotEmpty
+import javax.validation.constraints.NotNull
+
+data class CreatePostRequest(
+        @get:NotEmpty
+        val title: String,
+        @get:NotEmpty
+        val content: String?)
+
+data class UpdatePostRequest(
+        @get:NotEmpty
+        val title: String,
+        @get:NotEmpty
+        val content: String?)
 
 data class PaginationInfo(
         val currentPage: Int,

@@ -31,11 +31,11 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
 
     @Throws(Exception::class)
     override fun configure(http: HttpSecurity) {
-        http.cors();
-        http.csrf().disable();
+        http.cors()
+        http.csrf().disable() // TODO: rest api 쓸 때 csrf 트큰 써서 가능하게 만들고 disable 삭제하기
         http.headers().frameOptions().disable()
         http.exceptionHandling().authenticationEntryPoint {
-            req: HttpServletRequest?,
+            _: HttpServletRequest?,
             rsp: HttpServletResponse,
             e: AuthenticationException? -> rsp.sendError(HttpServletResponse.SC_UNAUTHORIZED, e.toString())
         }
