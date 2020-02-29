@@ -16,3 +16,6 @@ class RestAPIRequestException(
 abstract class SignupException : Throwable("")
 class AlreadyRegisteredUsernameException : SignupException()
 class ConfirmPasswordNotMatchedException : SignupException()
+
+abstract class PostException : Throwable("")
+class InvalidAutherException : PostException()

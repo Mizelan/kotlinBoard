@@ -1,5 +1,6 @@
 package com.mizelan.kotlinBoard.post
 
+import com.mizelan.kotlinBoard.user.UserEntity
 import javassist.NotFoundException
 import mu.KotlinLogging
 import org.springframework.data.domain.Page
@@ -17,7 +18,8 @@ class PostService (val postRepository: PostRepository) {
 
     fun getPost(id: Long) = postRepository.findByIdOrNull(id)
 
-    fun createPost(request: CreatePostRequest) = postRepository.save(Post(title = request.title, content = request.content))
+    fun createPost(user: UserEntity, request: CreatePostRequest) =
+            postRepository.save(Post(author = user, title = request.title, content = request.content))
 
     fun deletePost(id: Long) = postRepository.deleteById(id)
 

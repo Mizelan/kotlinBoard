@@ -52,4 +52,8 @@ class UserService(
                         password = passwordEncoder.encode(password),
                         authorities = authorities))
     }
+
+    @Transactional
+    fun getUser(username: String) =
+        userRepository.findByUsername(username)
 }

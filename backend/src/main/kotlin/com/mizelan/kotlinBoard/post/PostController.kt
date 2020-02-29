@@ -1,6 +1,8 @@
 package com.mizelan.kotlinBoard.post
 
+import com.mizelan.kotlinBoard.exception.InvalidAutherException
 import com.mizelan.kotlinBoard.user.UserRole
+import com.mizelan.kotlinBoard.user.UserService
 import mu.KotlinLogging
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
@@ -20,7 +22,7 @@ import javax.validation.Valid
 @RestController
 @RequestMapping("/api/post")
 class PostController(
-        @Autowired private val postRepository: PostRepository,
+        @Autowired private val userService: UserService,
         @Autowired private val postService: PostService,
         @Value("\${post.countOfPage}") private val countOfPage: Int = 5
 ) {
@@ -47,11 +49,14 @@ class PostController(
         return ResponseEntity(result, HttpStatus.OK)
     }
 
-    @PreAuthorize("hasAuthority('USER')")
+    @PreAuthorize("hasAuthority('USER')") // TODO: annotation 만들기
     @PostMapping
     fun create(@Validated @RequestBody request: CreatePostRequest): ResponseEntity<Post> {
-        val user = SecurityContextHolder.getContext().authentication.principal;
-        var result = postService.createPost(request)
+        val username = SecurityContextHolder.getContext().authentication.principal as String
+        val user = userService.getUser(username)
+                ?: throw InvalidAutherException()
+
+        var result = postService.createPost(user, request)
         return ResponseEntity(result, HttpStatus.OK)
     }
 

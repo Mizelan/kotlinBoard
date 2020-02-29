@@ -15,7 +15,7 @@
             <p class="mb-1 pt-2">{{data.content | formatShortString}}</p>
             <p>
               <span class="float-right">
-                {{data.id}} |
+                {{data.authorName === null ? "(deleted user)" : data.authorName}} |
                 <router-link :to="{path: `/post/${data.id}/edit`}" class="btn btn-sm btn-warning">수정</router-link>
               </span>
             </p>
