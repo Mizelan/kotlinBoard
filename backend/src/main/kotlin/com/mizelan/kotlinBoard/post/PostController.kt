@@ -1,7 +1,7 @@
 package com.mizelan.kotlinBoard.post
 
 import com.mizelan.kotlinBoard.exception.InvalidAutherException
-import com.mizelan.kotlinBoard.user.UserRole
+import com.mizelan.kotlinBoard.security.IsUser
 import com.mizelan.kotlinBoard.user.UserService
 import mu.KotlinLogging
 import org.springframework.beans.factory.annotation.Autowired
@@ -10,14 +10,14 @@ import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.security.access.annotation.Secured
 import org.springframework.security.access.prepost.PreAuthorize
-import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.security.core.context.SecurityContextHolder
-import org.springframework.security.core.userdetails.User
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
-import javax.validation.Valid
+import java.lang.annotation.ElementType
+import java.lang.annotation.Retention
+import java.lang.annotation.RetentionPolicy
+
 
 @RestController
 @RequestMapping("/api/post")
@@ -49,7 +49,7 @@ class PostController(
         return ResponseEntity(result, HttpStatus.OK)
     }
 
-    @PreAuthorize("hasAuthority('USER')") // TODO: annotation 만들기
+    @IsUser
     @PostMapping
     fun create(@Validated @RequestBody request: CreatePostRequest): ResponseEntity<Post> {
         val username = SecurityContextHolder.getContext().authentication.principal as String
