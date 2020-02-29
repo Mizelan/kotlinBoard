@@ -1,9 +1,7 @@
 <template>
   <div id="app">
-    <!-- TODO: api 서버가 없을 때 오류 처리-->
     <!-- TODO: github ReadMe.md 를 표시하기-->
     <!-- TODO: 페이지 상단에 페이지 로딩 프로그레스바 추가하기-->
-    <!-- TODO: 로그인 성공/실패 메세지를 팝업 메세지박스로 표시하기-->
 <!--    <div id="nav">-->
 <!--      <router-link to="/">Home</router-link> |-->
 <!--      <router-link to="/about">About</router-link>-->

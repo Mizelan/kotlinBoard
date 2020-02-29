@@ -2,6 +2,8 @@ package com.mizelan.kotlinBoard.post
 
 import com.mizelan.kotlinBoard.user.UserRole
 import mu.KotlinLogging
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
 import org.springframework.http.HttpStatus
@@ -17,7 +19,11 @@ import javax.validation.Valid
 
 @RestController
 @RequestMapping("/api/post")
-class PostController(val postRepository: PostRepository, val postService: PostService) {
+class PostController(
+        @Autowired private val postRepository: PostRepository,
+        @Autowired private val postService: PostService,
+        @Value("\${post.countOfPage}") private val countOfPage: Int = 5
+) {
 
     val logger = KotlinLogging.logger {}
 
@@ -30,7 +36,7 @@ class PostController(val postRepository: PostRepository, val postService: PostSe
                 PageRequest.of(targetPage, postCount, Sort.by(Sort.Direction.DESC, "id")))
         var responseData = mapOf(
                 "postList" to dataResult.content,
-                "pageInfo" to PaginationInfo(dataResult.number, dataResult.totalPages, 5)) // TODO: countOfPage를 외부 설정값으로 옮기기
+                "pageInfo" to PaginationInfo(dataResult.number, dataResult.totalPages, countOfPage))
         return ResponseEntity(responseData, HttpStatus.OK)
     }
 

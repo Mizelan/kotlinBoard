@@ -16,6 +16,8 @@ spring:
     show-sql: false
     hibernate:
       ddl-auto: update # validate
+post:
+  countOfPage: 10
 security:
   key: "jixgmcnvnxbhggugishotrqqnqtamypqtyxbruxkodbuethkpjekmudutodswpymmftpjkvpdumdqsayxqtoqokqcvpnogoefwyptgeaiulodthvwomouqmgednlumbvrverjetswqakbjxuznzkckiwsnuqowdnujojdblliggivbhtlhpzkvnjznifgqsukomajkvgmxjelodtcaisrwcpixzednpkfepgacadgaewujrvrpqrwhvjpjtimhtgemkeqdvaupujhrqmmbdkxfofoossmkqftczvfoflsthacedsxvrxhkxwfcccuztsjzvitmigbbillilrmxlzfaypumjwhoozfrkpxjpghxpqxzwvterkepybppvkoftpuqkdxzvoigznhfyjejjctxtbnznayxnhstvwhfvsfbgmhizvgwqfvcsduucbitwerlwmqlrbdzyyhwxuoakhyhfmvbclywovbbddqskmtzepioqtwfokhrojrmmhpytl"
   token-expire-minute: 10
