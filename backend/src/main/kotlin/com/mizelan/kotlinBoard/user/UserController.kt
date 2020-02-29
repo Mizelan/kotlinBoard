@@ -39,7 +39,7 @@ class UserController {
                 is BadCredentialsException -> {
                     ResponseEntity
                             .status(HttpStatus.NON_AUTHORITATIVE_INFORMATION)
-                            .body(ApiResponse("invalid username or password}"))
+                            .body(ApiResponse("invalid username or password"))
                 }
                 else -> throw e
             }
@@ -47,28 +47,19 @@ class UserController {
     }
 
     // TODO: https or http2로 바꾸기. password를 암호화해야 함
-    // TODO: 이미 있는 유저일 경우의 응답 메세지 추가
     @PostMapping("/signup")
-    fun signUp(
-            @RequestBody @Valid param: SignUpRequest,
-            result: BindingResult
+    fun signUp(@RequestBody @Valid param: SignUpRequest
     ): ResponseEntity<ApiResponse> {
-
-        if (result.hasErrors())
-            throw RestAPIRequestException(result.toString(), HttpStatus.BAD_REQUEST)
-
         return try {
-            userService.preCreateUser(param.userId, param.passWd, param.confirmPassWd)
+            userService.validateCreateUserRequest(param.userId, param.passWd, param.confirmPassWd)
             userService.createUser(param.userId, param.passWd)
             ResponseEntity
                     .status(HttpStatus.CREATED)
                     .body(ApiResponse(message = "success"))
-        } catch (e: java.lang.Exception) {
-            // TODO: 예외 나눠서 처리하기
-            //log.error(e.message, e)
+        } catch (e: IllegalArgumentException) {
             ResponseEntity
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(ApiResponse("internal error: ${e.toString()}"))
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(ApiResponse("invalid api parameters"))
         }
     }
 }

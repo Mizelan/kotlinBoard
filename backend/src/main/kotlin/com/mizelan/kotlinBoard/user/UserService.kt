@@ -28,7 +28,7 @@ class UserService(
     fun generatorToken(details: UserDetails) =
         jwtProvider.generateToken(UsernamePasswordAuthenticationToken(details, details.password, details.authorities))
 
-    fun preCreateUser(userId: String, passWd: String, confirmPassWd: String) {
+    fun validateCreateUserRequest(userId: String, passWd: String, confirmPassWd: String) {
         val dbInfo = userRepository.findByUsername(userId)
         if (dbInfo != null)
             throw IllegalArgumentException("already registered user.")
