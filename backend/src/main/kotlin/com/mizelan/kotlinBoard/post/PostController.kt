@@ -7,7 +7,9 @@ import org.springframework.data.domain.Sort
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.annotation.Secured
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.core.annotation.AuthenticationPrincipal
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.core.userdetails.User
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
@@ -39,11 +41,10 @@ class PostController(val postRepository: PostRepository, val postService: PostSe
         return ResponseEntity(result, HttpStatus.OK)
     }
 
-    //@Secured("ROLE_USER") // TODO: Secured로 메소드 단위 인가하기  
+    @PreAuthorize("hasAuthority('USER')")
     @PostMapping
-    fun create(
-            //@AuthenticationPrincipal activeUser: User,
-            @Validated @RequestBody request: CreatePostRequest): ResponseEntity<Post> {
+    fun create(@Validated @RequestBody request: CreatePostRequest): ResponseEntity<Post> {
+        val user = SecurityContextHolder.getContext().authentication.principal;
         var result = postService.createPost(request)
         return ResponseEntity(result, HttpStatus.OK)
     }

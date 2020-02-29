@@ -31,6 +31,7 @@
 <script>
     import Signup from "./Signup";
     import {mapActions} from "vuex";
+    import HttpStatus from "http-status-codes";
 
     export default {
         name: "Login",
@@ -62,13 +63,17 @@
                     username: this.username,
                     password: this.password,
                 })
-                    .then(() => {
-                        this.tryingToLogIn = false
-                        // Redirect to the originally requested page, or to the home page
-                        this.$router.push(this.$route.query.redirectFrom || { name: 'home' })
+                    .then(response => {
+                        this.tryingToLogIn = false;
+                        this.username = "";
+                        this.password = "";
+
+                        if (response.status === HttpStatus.OK) {
+                            this.$router.push(this.$route.query.redirectFrom || { name: 'home' })
+                        }
                     })
                     .catch((error) => {
-                        this.tryingToLogIn = false
+                        this.tryingToLogIn = false;
                         this.authError = error
                     })
             },

@@ -52,12 +52,11 @@ export const actions = {
         setDefaultAuthHeaders(state)
     },
     logIn({ commit, state, dispatch, getters }, { username, password } = {}) {
-        return axios
-            .post('/api/user/login', { username: username, password: password })
-            .then((response) => {
+        return axios.post('/api/user/login', { username: username, password: password })
+            .then(response => {
                 const jwtToken = response.data.data;
                 commit('setCurrentUser', jwtToken);
-                return jwtToken;
+                return response;
             })
             .catch(error => {
                console.warn(`login error: ${error}`);
@@ -67,8 +66,7 @@ export const actions = {
         commit('setCurrentUser', null)
     },
     signUp({commit}, {userId, passWd, confirmPassWd} = {}) {
-        return axios
-            .post('/api/user/signup', {userId, passWd, confirmPassWd})
+        return axios.post('/api/user/signup', {userId, passWd, confirmPassWd})
             .then((response) => {
                 return response;
             }).catch((error) => {

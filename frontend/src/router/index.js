@@ -25,18 +25,27 @@ if (!isProduction) {
   })
 }
 
-axios.interceptors.response.use(response => response, error => {
-  const status = error.response ? error.response.status : null;
-  if (status === HttpStatus.BAD_REQUEST) {
-    return alert(JSON.stringify(error.response))
-  }
-  if( status === HttpStatus.UNAUTHORIZED ||
-      status === HttpStatus.METHOD_NOT_ALLOWED) {
-    store.commit('auth/setCurrentUser', null)
-      return router.push('/login', null, null)
-  }
-  return Promise.reject(error);
-});
+axios.interceptors.response.use(
+    response => {
+      const status = response ? response.status : null;
+      if (status === HttpStatus.NON_AUTHORITATIVE_INFORMATION) {
+        alert("사용자 정보가 없거나 암호가 틀렸습니다.");
+      }
+      return response;
+    },
+    error => {
+      const status = error.response ? error.response.status : null;
+      if (status === HttpStatus.BAD_REQUEST) {
+        alert(JSON.stringify(error.response));
+        return error;
+      }
+      if( status === HttpStatus.UNAUTHORIZED ||
+          status === HttpStatus.METHOD_NOT_ALLOWED) {
+        store.commit('auth/setCurrentUser', null)
+          return router.push('/login', null, null)
+      }
+      return Promise.reject(error);
+    });
 
 const routes = [
   {

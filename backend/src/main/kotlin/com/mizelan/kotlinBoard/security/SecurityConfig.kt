@@ -22,7 +22,9 @@ import javax.servlet.http.HttpServletResponse
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
+@EnableGlobalMethodSecurity(
+        prePostEnabled = true,
+        securedEnabled = true)
 class SecurityConfig : WebSecurityConfigurerAdapter() {
     @Autowired
     lateinit var jwtAuthenticationFilter: JwtAuthenticationFilter
@@ -46,7 +48,7 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
                 .antMatchers("/", "/css/**", "/js/**", "/favicon.ico").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/user/**").permitAll()
                 .antMatchers(HttpMethod.GET,"/api/post","/api/post/**").permitAll()
-                .antMatchers("/api/post/**").hasAnyAuthority(UserRole.USER.name, UserRole.ADMIN.name)
+                .antMatchers(HttpMethod.GET,"/api/post/**").hasAnyAuthority(UserRole.USER.name, UserRole.ADMIN.name)
                 .antMatchers("/api/admin/**").hasAnyAuthority(UserRole.ADMIN.name)
                 .anyRequest().authenticated()
     }

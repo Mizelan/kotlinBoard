@@ -2,9 +2,12 @@ package com.mizelan.kotlinBoard.user
 
 import com.mizelan.kotlinBoard.exception.RestAPIRequestException
 import com.mizelan.kotlinBoard.utils.ApiResponse
+import mu.KotlinLogging
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.authentication.BadCredentialsException
+import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -15,32 +18,31 @@ import javax.validation.Valid
 @RestController
 @RequestMapping("/api/user")
 class UserController {
+
+    val logger = KotlinLogging.logger {}
+
     @Autowired
     private lateinit var userService: UserService
 
     @PostMapping("/login")
-    fun userLogin(
-            @RequestBody @Valid request: LoginRequest,
-            result: BindingResult
-    ): ResponseEntity<ApiResponse> {
-
-        // TODO: interceptor로 뺄 수 없을까?
-        if (result.hasErrors())
-            throw RestAPIRequestException(result.toString(), HttpStatus.BAD_REQUEST)
+    fun userLogin(@RequestBody @Valid request: LoginRequest): ResponseEntity<ApiResponse> {
 
         return try {
             val userDetails = userService.getUserDetails(request.username, request.password)
             val token = userService.generatorToken(userDetails)
             ResponseEntity
                     .ok()
-                    .body(ApiResponse(message = "success",data = token))
+                    .body(ApiResponse(message = "success", data = token))
         } catch (e: Exception) {
-            // TODO: 암호 틀렸을 떄 예외 따로 처리해 응답하기
-            // TODO: 예외 나눠서 처리하기
-            //log.error(e.message, e)
-            ResponseEntity
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(ApiResponse("internal error: ${e.toString()}"))
+            when (e) {
+                is UsernameNotFoundException,
+                is BadCredentialsException -> {
+                    ResponseEntity
+                            .status(HttpStatus.NON_AUTHORITATIVE_INFORMATION)
+                            .body(ApiResponse("invalid username or password}"))
+                }
+                else -> throw e
+            }
         }
     }
 
