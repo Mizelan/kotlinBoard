@@ -1,5 +1,7 @@
 package com.mizelan.kotlinBoard.user
 
+import com.mizelan.kotlinBoard.exception.AlreadyRegisteredUsernameException
+import com.mizelan.kotlinBoard.exception.ConfirmPasswordNotMatchedException
 import com.mizelan.kotlinBoard.security.jwt.JwtProvider
 import com.mizelan.kotlinBoard.security.service.SimpleUserDetailsService
 import org.springframework.beans.factory.annotation.Autowired
@@ -31,10 +33,10 @@ class UserService(
     fun validateCreateUserRequest(userId: String, passWd: String, confirmPassWd: String) {
         val dbInfo = userRepository.findByUsername(userId)
         if (dbInfo != null)
-            throw IllegalArgumentException("already registered user.")
+            throw AlreadyRegisteredUsernameException()
 
         if (passWd != confirmPassWd)
-            throw IllegalArgumentException("invalid password")
+            throw ConfirmPasswordNotMatchedException()
     }
 
     @Transactional

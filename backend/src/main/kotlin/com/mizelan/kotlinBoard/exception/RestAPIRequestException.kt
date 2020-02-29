@@ -12,3 +12,7 @@ class RestAPIRequestException(
         this.status = status
     }
 }
+
+abstract class SignupException : Throwable("")
+class AlreadyRegisteredUsernameException : SignupException()
+class ConfirmPasswordNotMatchedException : SignupException()

@@ -1,10 +1,13 @@
 package com.mizelan.kotlinBoard.user
 
+import com.mizelan.kotlinBoard.exception.AlreadyRegisteredUsernameException
+import com.mizelan.kotlinBoard.exception.ConfirmPasswordNotMatchedException
 import com.mizelan.kotlinBoard.utils.ApiResponse
 import mu.KotlinLogging
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.http.ResponseEntity.badRequest
 import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.web.bind.annotation.PostMapping
@@ -56,10 +59,10 @@ class UserController {
             ResponseEntity
                     .status(HttpStatus.CREATED)
                     .body(ApiResponse(message = "success", data = token))
-        } catch (e: IllegalArgumentException) {
-            ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body(ApiResponse("invalid api parameters"))
+        } catch (e: AlreadyRegisteredUsernameException) {
+            badRequest().body(ApiResponse("Already Registered Username"))
+        } catch (e: ConfirmPasswordNotMatchedException) {
+            badRequest().body(ApiResponse("Confirm Password Not Matched"))
         }
     }
 }

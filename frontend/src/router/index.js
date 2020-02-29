@@ -36,13 +36,16 @@ axios.interceptors.response.use(
     error => {
       const status = error.response ? error.response.status : null;
       if (status === HttpStatus.BAD_REQUEST) {
-        alert(JSON.stringify(error.response));
+        if (error.response.data.message)
+          alert(error.response.data.message);
+        else
+          alert(JSON.stringify(error.response));
         return error;
       }
       if( status === HttpStatus.UNAUTHORIZED ||
           status === HttpStatus.METHOD_NOT_ALLOWED) {
         store.commit('auth/setCurrentUser', null)
-          return router.push('/login', null, null)
+        return router.push('/login', null, null)
       }
       return Promise.reject(error);
     });
