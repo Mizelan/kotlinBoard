@@ -11,9 +11,9 @@ data class LoginRequest(
 
 data class SignUpRequest(
         @get:NotBlank
-        val userId: String,
+        val username: String,
         @get:NotBlank
-        val passWd: String,
+        val password: String,
         @get:NotBlank
-        val confirmPassWd: String
+        val confirmPassword: String
 )

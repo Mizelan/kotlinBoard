@@ -3,15 +3,15 @@
         <div class="modal-body">
             <div class="form-group">
                 <label for="signup_user_id">User Id</label>
-                <input type="email" id="signup_user_id" v-model="userId" class="form-control" placeholder="User ID를 입력해주세요." required autofocus>
+                <input type="email" id="signup_user_id" v-model="username" class="form-control" placeholder="User ID를 입력해주세요." required autofocus>
             </div>
             <div class="form-group">
                 <label for="signup_password">Password</label>
-                <input type="password" id="signup_password" v-model="passWd" class="form-control" placeholder="비밀번호를 입력해주세요." required>
+                <input type="password" id="signup_password" v-model="password" class="form-control" placeholder="비밀번호를 입력해주세요." required>
             </div>
             <div class="form-group">
                 <label for="signup_password_confirm">Password</label>
-                <input type="password" id="signup_password_confirm" v-model="passWdConfirm" class="form-control" placeholder="비밀번호를 한번 더 입력해주세요."
+                <input type="password" id="signup_password_confirm" v-model="confirmPassword" class="form-control" placeholder="비밀번호를 한번 더 입력해주세요."
                        required>
             </div>
         </div>
@@ -30,26 +30,26 @@
         name: "Signup",
         data() {
             return {
-                userId: '',
-                passWd: '',
-                passWdConfirm: ''
+                username: '',
+                password: '',
+                confirmPassword: ''
             }
         },
         methods: {
             ...mapActions('auth', ['logIn', 'logOut', 'signUp']),
             trySignUp() {
-                const userId = this.userId;
-                const passWd = this.passWd;
-                const passWdConfirm = this.passWdConfirm;
+                const username = this.username;
+                const password = this.password;
+                const confirmPassword = this.confirmPassword;
 
                 this.signUp({
-                    userId: userId,
-                    passWd: passWd,
-                    confirmPassWd: passWdConfirm})
-                .then(result => {
-                    console.log(result)
-                    if (result.status === HttpStatus.CREATED) {
+                    username: username,
+                    password: password,
+                    confirmPassword: confirmPassword})
+                .then(response => {
+                    if (response.status === HttpStatus.CREATED) {
                         this.$emit('closeModal', true);
+                        this.$router.push(this.$route.query.redirectFrom || { name: 'home' })
                     }
                 })
             }

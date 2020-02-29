@@ -65,12 +65,16 @@ export const actions = {
     logOut({ commit }) {
         commit('setCurrentUser', null)
     },
-    signUp({commit}, {userId, passWd, confirmPassWd} = {}) {
-        return axios.post('/api/user/signup', {userId, passWd, confirmPassWd})
+    signUp({commit}, {username, password, confirmPassword} = {}) {
+        return axios.post('/api/user/signup', {username, password, confirmPassword})
             .then((response) => {
+                if (response.status === HttpStatus.CREATED) {
+                    const jwtToken = response.data.data;
+                    commit('setCurrentUser', jwtToken);
+                }
                 return response;
             }).catch((error) => {
-                console.log(`signup error: + ${error}`);
+                console.log(`signup error: ${error}`);
             });
     },
 };

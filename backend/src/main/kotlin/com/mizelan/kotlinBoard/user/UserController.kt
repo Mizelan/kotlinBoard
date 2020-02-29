@@ -1,6 +1,5 @@
 package com.mizelan.kotlinBoard.user
 
-import com.mizelan.kotlinBoard.exception.RestAPIRequestException
 import com.mizelan.kotlinBoard.utils.ApiResponse
 import mu.KotlinLogging
 import org.springframework.beans.factory.annotation.Autowired
@@ -8,7 +7,6 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.security.core.userdetails.UsernameNotFoundException
-import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -46,16 +44,18 @@ class UserController {
         }
     }
 
-    // TODO: https or http2로 바꾸기. password를 암호화해야 함
     @PostMapping("/signup")
     fun signUp(@RequestBody @Valid param: SignUpRequest
     ): ResponseEntity<ApiResponse> {
         return try {
-            userService.validateCreateUserRequest(param.userId, param.passWd, param.confirmPassWd)
-            userService.createUser(param.userId, param.passWd)
+            userService.validateCreateUserRequest(param.username, param.password, param.confirmPassword)
+            userService.createUser(param.username, param.password)
+            val userDetails = userService.getUserDetails(param.username, param.password)
+            val token = userService.generatorToken(userDetails)
+
             ResponseEntity
                     .status(HttpStatus.CREATED)
-                    .body(ApiResponse(message = "success"))
+                    .body(ApiResponse(message = "success", data = token))
         } catch (e: IllegalArgumentException) {
             ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
