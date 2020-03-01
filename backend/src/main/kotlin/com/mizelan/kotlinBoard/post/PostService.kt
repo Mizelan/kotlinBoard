@@ -41,5 +41,14 @@ class PostService (val postRepository: PostRepository) {
 
         return entity
     }
+
+    fun increaseViewCount(id: Long) {
+        var entity =
+                postRepository.findById(id).orElse(null) ?:
+                throw NotFoundException("post `$id` not found.")
+
+        postRepository.save(
+                entity.copy(viewCount = entity.viewCount + 1))
+    }
 }
 

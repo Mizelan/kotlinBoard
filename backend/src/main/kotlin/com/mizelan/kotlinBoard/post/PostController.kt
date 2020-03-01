@@ -42,6 +42,7 @@ class PostController(
     fun getById(@PathVariable("id") id: Long): ResponseEntity<PostEntity> {
         require(id > 0)
         var result = postService.getPost(id)
+        postService.increaseViewCount(id)
         return ResponseEntity(result, HttpStatus.OK)
     }
 

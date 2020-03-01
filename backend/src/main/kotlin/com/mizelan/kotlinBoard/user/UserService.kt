@@ -12,6 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import javax.transaction.Transactional
 
+@Transactional
 @Service
 class UserService(
         @Autowired private val simpleUserDetailsService: SimpleUserDetailsService,
@@ -39,7 +40,6 @@ class UserService(
             throw ConfirmPasswordNotMatchedException()
     }
 
-    @Transactional
     fun createUser(username: String, password: String) {
         val authorities = arrayOf(
                 UserRole.USER.name,
@@ -53,7 +53,6 @@ class UserService(
                         authorities = authorities))
     }
 
-    @Transactional
     fun getUser(username: String) =
         userRepository.findByUsername(username)
 }

@@ -28,7 +28,7 @@
                 <td>{{data.id}}</td>
                 <td class="text-center"><router-link :to="{path: `/post/${data.id}`}">{{data.title}}</router-link></td>
                 <td class="text-center">{{data.authorName === null ? "(deleted user)" : data.authorName}}</td>
-                <td class="text-center">{{0}}</td>
+                <td class="text-center">{{data.viewCount}}</td>
                 <td class="text-center">{{data.createdAt | formatDate}}</td>
                 <td v-if="isCurrentUserPost(data)" class="text-center"><router-link :to="{path: `/post/${data.id}/edit`}" class="btn btn-sm btn-warning">수정</router-link></td>
               </tr>

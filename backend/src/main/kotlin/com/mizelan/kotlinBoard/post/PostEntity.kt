@@ -21,6 +21,7 @@ data class PostEntity(
         val author: UserEntity?,
         val title: String,
         val content: String?,
+        val viewCount: Long = 0,
         val createdAt: Date = Date(),
         val updatedAt: Date = Date()) {
 
