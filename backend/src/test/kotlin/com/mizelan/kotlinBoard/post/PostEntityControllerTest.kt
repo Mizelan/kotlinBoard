@@ -1,10 +1,8 @@
 package com.mizelan.kotlinBoard.post
 
 import com.google.gson.Gson
-import com.mizelan.kotlinBoard.security.jwt.JwtProvider
-import org.junit.jupiter.api.BeforeEach
+import com.mizelan.kotlinBoard.user.UserEntity
 import org.junit.jupiter.api.Test
-import org.mockito.ArgumentMatchers
 import org.mockito.BDDMockito.*
 import org.mockito.Mockito
 import org.springframework.beans.factory.annotation.Autowired
@@ -14,8 +12,6 @@ import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
-import org.springframework.security.core.Authentication
-import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
@@ -28,7 +24,7 @@ inline fun <reified T: Any> mock(): T = Mockito.mock(T::class.java)
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class PostControllerTest {
+class PostEntityControllerTest {
 
     @Autowired
     lateinit var mockMvc: MockMvc
@@ -38,11 +34,11 @@ class PostControllerTest {
 
     @Test
     fun getAll() {
-        val postPage = PageImpl<Post>(
+        val postPage = PageImpl<PostEntity>(
                 listOf(
-                        Post(1,"one", "one"),
-                        Post(2,"two", "two"),
-                        Post(3,"three", "three")
+                        PostEntity(1,null,"one", "one"),
+                        PostEntity(2,null,"two", "two"),
+                        PostEntity(3,null,"three", "three")
                 ))
         val pageable = PageRequest.of(0, 5, Sort.by(Sort.Direction.DESC, "id"))
         given(postService.getPosts(pageable))
@@ -62,7 +58,7 @@ class PostControllerTest {
     @Test
     fun getById() {
         given(postService.getPost(1))
-                .willReturn(Post(1,"one", "one"));
+                .willReturn(PostEntity(1, null,"one", "one"));
 
         mockMvc.perform(get("/api/post/1"))
                 .andExpect(status().isOk)
@@ -78,9 +74,10 @@ class PostControllerTest {
     @Test
     @WithMockUser(roles = ["USER"])
     fun create() {
+        val user: UserEntity = mock()
         val request = CreatePostRequest("title", "content")
-        given(postService.createPost(request))
-                .willReturn(Post(123, request.title, request.content));
+        given(postService.createPost(user, request))
+                .willReturn(PostEntity(123, user, request.title, request.content));
 
         mockMvc.perform(
                     post("/api/post")
@@ -93,16 +90,17 @@ class PostControllerTest {
                 .andExpect(jsonPath("\$.content").value("content"))
                 .andDo(print())
 
-        then(postService).should(atMostOnce()).createPost(request)
+        then(postService).should(atMostOnce()).createPost(user, request)
         then(postService).shouldHaveNoMoreInteractions()
     }
 
     @Test
     @WithMockUser(roles = ["USER"])
     fun update() {
+        val user: UserEntity = mock()
         val request = UpdatePostRequest("title", "content")
-        given(postService.updatePost(123, request))
-                .willReturn(Post(123, request.title, request.content));
+        given(postService.updatePost(user, 123, request))
+                .willReturn(PostEntity(123, user, request.title, request.content));
 
         mockMvc.perform(
                 put("/api/post/123")
@@ -114,7 +112,7 @@ class PostControllerTest {
                 .andExpect(jsonPath("\$.content").value("content"))
                 .andDo(print())
 
-        then(postService).should(atMostOnce()).updatePost(123, request)
+        then(postService).should(atMostOnce()).updatePost(user, 123, request)
         then(postService).shouldHaveNoMoreInteractions()
     }
 

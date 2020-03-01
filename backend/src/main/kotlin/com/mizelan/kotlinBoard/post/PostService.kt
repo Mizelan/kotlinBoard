@@ -2,7 +2,6 @@ package com.mizelan.kotlinBoard.post
 
 import com.mizelan.kotlinBoard.user.UserEntity
 import javassist.NotFoundException
-import mu.KotlinLogging
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
@@ -15,16 +14,16 @@ import javax.security.auth.message.AuthException
 @Transactional
 class PostService (val postRepository: PostRepository) {
 
-    fun getPosts(pageable: Pageable) : Page<Post> = postRepository.findAll(pageable)
+    fun getPosts(pageable: Pageable) : Page<PostEntity> = postRepository.findAll(pageable)
 
     fun getPost(id: Long) = postRepository.findByIdOrNull(id)
 
     fun createPost(user: UserEntity, request: CreatePostRequest) =
-            postRepository.save(Post(author = user, title = request.title, content = request.content))
+            postRepository.save(PostEntity(author = user, title = request.title, content = request.content))
 
     fun deletePost(id: Long) = postRepository.deleteById(id)
 
-    fun updatePost(user: UserEntity, id: Long, request: UpdatePostRequest): Post {
+    fun updatePost(user: UserEntity, id: Long, request: UpdatePostRequest): PostEntity {
         var entity =
             postRepository.findById(id).orElse(null) ?:
                 throw NotFoundException("post `$id` not found.")

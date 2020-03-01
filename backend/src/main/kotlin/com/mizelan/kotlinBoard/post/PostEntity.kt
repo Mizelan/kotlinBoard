@@ -11,7 +11,7 @@ import javax.persistence.*
 
 @Entity
 @Table(name = "`post`")
-data class Post(
+data class PostEntity(
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         val id: Long? = null,
