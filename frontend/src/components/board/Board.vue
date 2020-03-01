@@ -1,30 +1,45 @@
 <template>
   <div class="container-fluid">
     <div class="row">
-      <div class="col-sm-12 offset-md-1 col-md-10 col-lg-10 offset-lg-1">
-        <h4>
-          게시판
-          <span class="float-right">
-            <router-link to="/post/create" class="btn btn-info btn-sm ml-2">글쓰기</router-link>
-          </span>
-        </h4>
-        <ul class="timeline">
-          <li v-for="(data) in postList" v-bind:key="data.id" class="border-bottom pb-1">
-            <router-link :to="{path: `/post/${data.id}`}">{{data.title}}</router-link>
-            <span href="#" class="float-right">{{data.createdAt | formatDate}}</span>
-            <p class="mb-1 pt-2">{{data.content | formatShortString}}</p>
-            <p>
-              <span class="float-right">
-                {{data.authorName === null ? "(deleted user)" : data.authorName}} |
-                <router-link :to="{path: `/post/${data.id}/edit`}" class="btn btn-sm btn-warning">수정</router-link>
-              </span>
-            </p>
-            <div class="clearfix"></div>
-          </li>
-        </ul>
+      <div class="col-lg-12">
+        <div class="row">
+          <div class="col-lg-10">
+            <h2 class="title-1 m-b-25">게시판</h2>
+          </div>
+          <div class="col-lg-2 text-center">
+            <router-link to="/post/create" class="btn btn-info">글쓰기</router-link>
+          </div>
+        </div>
+        <div class="table-responsive table--no-card m-b-40">
+          <table class="table table-striped table-sm">
+            <thead class="thead-dark">
+            <tr>
+              <th style="max-width: 100px; width: 5%">#</th>
+              <th style="width: 45%" class="text-center">제목</th>
+              <th style="width: 15%" class="text-center">글쓴이</th>
+              <th style="width: 10%" class="text-center">조회</th>
+              <th style="width: 20%" class="text-center">날짜</th>
+              <th style="width: 5%" class="text-center"></th>
+            </tr>
+            </thead>
+            <tbody>
+
+              <tr v-for="(data) in postList" v-bind:key="data.id">
+                <td>{{data.id}}</td>
+                <td class="text-center"><router-link :to="{path: `/post/${data.id}`}">{{data.title}}</router-link></td>
+                <td class="text-center">{{data.authorName === null ? "(deleted user)" : data.authorName}}</td>
+                <td class="text-center">{{0}}</td>
+                <td class="text-center">{{data.createdAt | formatDate}}</td>
+                <td class="text-center"><router-link :to="{path: `/post/${data.id}/edit`}" class="btn btn-sm btn-warning">수정</router-link></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
-    <Pagination/>
+    <div class="row d-flex justify-content-center">
+      <Pagination/>
+    </div>
   </div>
 </template>
 
