@@ -14,7 +14,8 @@ export const mutations = {
         if (jwtToken) {
             const decoded = VueJwtDecode.decode(jwtToken);
             state.currentUser = {}
-            state.currentUser.name = decoded.sub;
+            state.currentUser.username = decoded.sub;
+            state.currentUser.userId = decoded.userId
             state.currentUser.authorities = decoded.authorities.split(',');
             state.currentUser.jwtToken = jwtToken;
             saveState('auth.currentUser', state.currentUser);

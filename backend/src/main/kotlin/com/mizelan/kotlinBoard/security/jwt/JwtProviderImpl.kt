@@ -1,5 +1,6 @@
 package com.mizelan.kotlinBoard.security.jwt
 
+import com.mizelan.kotlinBoard.user.AppUser
 import com.mizelan.kotlinBoard.utils.toDateTime
 import io.jsonwebtoken.ExpiredJwtException
 import io.jsonwebtoken.Jwts
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.authority.SimpleGrantedAuthority
+import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 import java.util.*
@@ -35,12 +37,15 @@ class JwtProviderImpl(
     override fun generateToken(authentication: Authentication): String {
 
         logger.debug { "Jwt 토큰 발급 시도: ${authentication.name}"}
-        
+
+        val appUser = authentication.principal as AppUser;
+
         try {
             val authorities = authentication.authorities.joinToString(",")
             return Jwts.builder()
                     .setSubject(authentication.name)
                     .claim("authorities", authorities)
+                    .claim("userId", appUser.userId)
                     .setIssuedAt(Date())
                     .signWith(SignatureAlgorithm.HS512, secretKey)
                     .setExpiration(LocalDateTime.now().plusMinutes(tokenExpireMinute).toDateTime())

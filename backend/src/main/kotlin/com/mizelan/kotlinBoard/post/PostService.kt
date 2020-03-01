@@ -9,6 +9,7 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.*
+import javax.security.auth.message.AuthException
 
 @Service
 @Transactional
@@ -23,10 +24,13 @@ class PostService (val postRepository: PostRepository) {
 
     fun deletePost(id: Long) = postRepository.deleteById(id)
 
-    fun updatePost(id: Long, request: UpdatePostRequest): Post {
+    fun updatePost(user: UserEntity, id: Long, request: UpdatePostRequest): Post {
         var entity =
             postRepository.findById(id).orElse(null) ?:
                 throw NotFoundException("post `$id` not found.")
+
+        if (user.id != entity.authorId())
+            throw AuthException("not enough authority")
 
         postRepository.save(
                 entity.copy(

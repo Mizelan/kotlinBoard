@@ -30,7 +30,7 @@
                 <td class="text-center">{{data.authorName === null ? "(deleted user)" : data.authorName}}</td>
                 <td class="text-center">{{0}}</td>
                 <td class="text-center">{{data.createdAt | formatDate}}</td>
-                <td class="text-center"><router-link :to="{path: `/post/${data.id}/edit`}" class="btn btn-sm btn-warning">수정</router-link></td>
+                <td v-if="isCurrentUserPost(data)" class="text-center"><router-link :to="{path: `/post/${data.id}/edit`}" class="btn btn-sm btn-warning">수정</router-link></td>
               </tr>
             </tbody>
           </table>
@@ -45,7 +45,7 @@
 
 <script>
   /* eslint-disable no-unused-vars */
-  import {mapActions, mapState} from 'vuex'
+  import {mapActions, mapGetters, mapState} from 'vuex'
   import store from '@/state/store'
   import FilterHelpers from '@/utils/filter-helper.js';
   import Pagination from '@/components/board/Pagination';
@@ -59,9 +59,16 @@ export default {
   computed: mapState('post', {
     postList: 'postList',
     pageInfo: 'pageInfo'
-  }),
+    }),
   methods: {
+    ...mapGetters('auth', ['loggedIn', 'isAdmin', 'isUser']),
     ...mapActions('post', ['readPostList', 'readPost', 'createPost', 'updatePost']),
+    isCurrentUserPost(postData) {
+      if (this.loggedIn()) {
+        return postData.authorId === store.state.auth.currentUser.userId;
+      }
+      return false;
+    }
   },
   watch: {
     '$route' (to, from) {

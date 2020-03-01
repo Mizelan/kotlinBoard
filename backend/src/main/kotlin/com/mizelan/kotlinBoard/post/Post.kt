@@ -25,9 +25,8 @@ data class Post(
         val updatedAt: Date = Date()) {
 
         @JsonGetter
-        fun authorName() : String? {
-                if (author == null)
-                        return null
-                return author.username
-        }
+        fun authorId() = author?.id
+
+        @JsonGetter
+        fun authorName() = author?.username
 }

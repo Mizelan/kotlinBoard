@@ -62,7 +62,9 @@ class PostController(
 
     @PutMapping(path = ["/{id}"])
     fun update(@RequestBody request: UpdatePostRequest, @PathVariable("id") id: Long): ResponseEntity<Post> {
-        val result = postService.updatePost(id, request)
+        val username = SecurityContextHolder.getContext().authentication.principal as String
+        val user = userService.getUser(username)!!
+        val result = postService.updatePost(user, id, request)
         return ResponseEntity(result, HttpStatus.OK)
     }
 
