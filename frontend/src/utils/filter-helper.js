@@ -3,7 +3,7 @@ import moment from 'moment'
 export default class FilterHelpers {
     static toLocalDateTimeString(value) {
         if (value)
-            return moment(String(value)).local().format("YYYY/M/D H:m")
+            return moment(String(value)).local().format("YYYY/MM/DD HH:mm")
     }
 
     static toStringEllipsis(value, limitLength = 100) {
